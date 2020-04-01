@@ -23,7 +23,7 @@ Great, so now you've put together your device it's time to program your device.
 
 ## Programming your Particle Argon microcontroller
 Now that you have the device assembled and paired, you want to plug it into the computer using the USB cable that was supplied. Next open up the Particle Workbench (do this by opening Visual Studio Code -- commonly referred to as VS Code). When you've done that, you'll be ready to follow along with the tutorial in this next video. I recommend watching the video and then try it for yourself with the air quality kit tutorial and the video as reference.
-[![Programming your Particle Argon](https://raw.githubusercontent.com/jakehosen/Ecological_Sensors/master/particle_programming_youtube.png)]( https://youtu.be/htxbdjW4TLk  "Particle Programming")
+[![Programming your Particle Argon](https://github.com/jakehosen/Ecological_Sensors/raw/master/particle_programming_youtube.png)]( https://youtu.be/htxbdjW4TLk  "Particle Programming")
 
 Okay, now that you've completed the work in this video, your sensor package is collecting data and sending those data to the cloud. The problem is that now we have to actually save our data to the cloud somewhere. That's the next exciting part.
 
