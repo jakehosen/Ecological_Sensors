@@ -1,7 +1,6 @@
 ---
 title: "Particle Argon Setup"
 author: "Jake Hosen"
-date: "4/1/2020"
 output: html_document
 ---
 
@@ -14,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 * The Particle mobile app for [iOS](https://apps.apple.com/us/app/particle-iot/id991459054) or [Android](https://play.google.com/store/apps/details?id=io.particle.android.app&hl=en_US)
 * [Particle Workbench](https://particle.io/workbench)
 
-**this tutorial is based off the (air quality kit tutorial available from Particle)[https://docs.particle.io/quickstart/aqmk-project/].** I strongly recommend reading through that tutorial before you get started.
+**this tutorial is based off the [air quality kit tutorial available from Particle](https://docs.particle.io/quickstart/aqmk-project/).** I strongly recommend reading through that tutorial before you get started.
 
 ## Get started: assembling and pairing your device
 **I've put together a Youtube video that will help you assemble your device:**
