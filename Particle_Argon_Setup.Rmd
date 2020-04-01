@@ -1,0 +1,44 @@
+---
+title: "Particle Argon Setup"
+author: "Jake Hosen"
+date: "4/1/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Stuff to install first
+* [A Particle account](https://login.particle.io/)
+* The Particle mobile app for [iOS](https://apps.apple.com/us/app/particle-iot/id991459054) or [Android](https://play.google.com/store/apps/details?id=io.particle.android.app&hl=en_US)
+* [Particle Workbench](https://particle.io/workbench)
+
+## Get started assembling your device
+**this tutorial is based off the )air quality kit tutorial available from Particle)[https://docs.particle.io/quickstart/aqmk-project/]. I strongly recommend reading through that tutorial before you get started.**
+
+I've put together a Youtube video that will help you assemble your device:
+[![Assembling and Pairing Particle Microcontroller](https://docs.particle.io/assets/images/argon-kit-looped-antenna-docs-crop.jpg)](https://www.youtube.com/watch?v=aPB4ETfzj9M&t=440s "Particle Assembly")
+
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
