@@ -38,6 +38,7 @@ That's totally fine. I've included a working version of the code below. Watch th
 
 
 
+**Here's the code that you past into VS Code following the instructions in the video:**
 ```{c eval=FALSE}
 /*
  * Project Argon_Tutorial
