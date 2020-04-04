@@ -7,7 +7,7 @@ navbar:
     - text: "Home"
       icon: fa-home
       href: index.html
-    - text: "Sensor Setup"
+    - text: "Setup Sensor"
       icon: fa-wrench
       href: sensorsetup.html
     - text: "Tests"
