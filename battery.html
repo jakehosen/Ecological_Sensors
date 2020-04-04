@@ -339,11 +339,15 @@ $(document).ready(function () {
 </div>
 
 
-<p><img src="sensor_lights_small.gif" width="300" /></p>
-<div id="welcome-to-the-ecological-sensors-data-course-materials." class="section level2">
-<h2>Welcome to the Ecological Sensors &amp; Data course materials.</h2>
-<p>I’ve reorganized the webpage so I can add more material. If you came here looking for the tutorials on setting on the Particle air quality kit. Use the “Sensor Setup” link at the top of the page.</p>
-<p>All of the code and other resources for the class (including how to build this website) are available as a repository on Github from the link on the menu bar.</p>
+<div id="testing-battery-life-and-the-impact-of-vocs-from-tape-on-the-air-quality-sensor." class="section level2">
+<h2>Testing battery life and the impact of VOCs from tape on the air quality sensor.</h2>
+<p>When we met in class, wanted to know how long the battery life was on these sensors. I started by logging data and sending it to the web at 10 second intervals. Logging this way gave us about 12 hours of battery life. Currently I’m logging at 15 minute intervals and will update the page when I’m done with that experiment.</p>
+<p>Some people wanted to mount their sensors with tape, but there was concern that the volatile organic compounds (VOCs) from tape (the glue smell is VOCs) would disrupt the air quality sensor since the air quality sensor is designed to detect all sorts of VOC. I found that while there was intially a spike in VOCs from the sensor, the tape seemed to degas after several hours.</p>
+<p>I put this sensor next to my computer to run this test. You can see from the dust sensor when I started to work near my computer again.</p>
+<div class="figure">
+<img src="data_plots/TapeExperiment.png" alt="Plots showing battery life of Particle Argon Air Quality kit when logging at 10 second intervals. Air quality voltage (AQ Voltage) initially spiked because an experiment to test the impact of degassing tape (in this case Duck Brand packing tape) on the air quality sensor performance" />
+<p class="caption">Plots showing battery life of Particle Argon Air Quality kit when logging at 10 second intervals. Air quality voltage (AQ Voltage) initially spiked because an experiment to test the impact of degassing tape (in this case Duck Brand packing tape) on the air quality sensor performance</p>
+</div>
 </div>
 
 
