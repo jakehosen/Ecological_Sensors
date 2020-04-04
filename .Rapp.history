@@ -1,0 +1,2453 @@
+str(sycamore_temperature)
+str(sycamore_discharge)
+head(sycamore_discharge$dsc_fieldData)
+sycamore_discharge$dsc_fieldData[,c("streamStage","totalDischarge")]
+plot(sycamore_discharge$dsc_fieldData[,c("streamStage","totalDischarge")])
+lm(log10(sycamore_discharge$dsc_fieldData[,c("totalDischarge")])~sycamore_discharge$dsc_fieldData[,c("streamStage")]
+summary(lm(log10(sycamore_discharge$dsc_fieldData[,c("totalDischarge")])~sycamore_discharge$dsc_fieldData[,c("streamStage")])#
+)
+sycamore_discharge$dsc_fieldData[,c("totalDischarge")]
+lm(log10(sycamore_discharge$dsc_fieldData[,c("totalDischarge")]+1)~sycamore_discharge$dsc_fieldData[,c("streamStage")])
+summary(lm(log10(sycamore_discharge$dsc_fieldData[,c("totalDischarge")]+1)~sycamore_discharge$dsc_fieldData[,c("streamStage")]))
+str(sycamore_depth)
+sycamore_depth <- loadByProduct(dpID="DP1.20016.001", site="SYCA", package="expanded",check.size=F)$EOS_5_min[,c("startDateTime","surfacewaterElevMean")]
+head(sycamore_depth)
+?predict.lm
+predict(rating_curve,sycamore_depth$surfacewaterElevMean)
+rating_curve<-lm(log10(sycamore_discharge$dsc_fieldData[,c("totalDischarge")]+1)~sycamore_discharge$dsc_fieldData[,c("streamStage")])#
+#
+predict(rating_curve,sycamore_depth$surfacewaterElevMean)
+predict(rating_curve,newdata=sycamore_depth$surfacewaterElevMean)
+sycamore_depth$streamStage<-sycamore_depth$surfacewaterElevMean#
+predict(rating_curve,newdata=sycamore_depth)
+sycamore_depth
+rating_curve
+predict(rating_curve,newdata=sycamore_depth)
+sycamore_depth$surfacewaterElevMean[!is.na(sycamore_depth$surfacewaterElevMean)]
+hist(sycamore_depth$surfacewaterElevMean[!is.na(sycamore_depth$surfacewaterElevMean)])
+hist(sycamore_discharge$dsc_fieldData[,c("streamStage")])
+sycamore_depth$streamStage<-sycamore_depth$surfacewaterElevMean-643#
+predict(rating_curve,newdata=sycamore_depth)
+sycamore_discharge <- loadByProduct(dpID="DP1.20048.001", site="SYCA", package="expanded",check.size=F)$dsc_fieldData[,c("total_Discharge","streamStage")]
+sycamore_discharge <- loadByProduct(dpID="DP1.20048.001", site="SYCA", package="expanded",check.size=F)$dsc_fieldData
+head(sycamore_discharge)
+rating_curve<-lm(log10(totalDischarge+1)~streamStage,sycamore_discharge)
+sycamore_depth$streamStage<-sycamore_depth$surfacewaterElevMean-643#
+predict(rating_curve,newdata=sycamore_depth)
+sycamore_depth$discharge_ls<-predict(rating_curve,newdata=sycamore_depth)
+sycamore_depth$discharge_ls[!is.na(sycamore_depth$discharge_ls)]
+head(sycamore_depth)
+sycamore_depth$discharge_cms<-(10^(predict(rating_curve,newdata=sycamore_depth)))/1000
+head(sycamore_depth)
+head(sycamore_water_quality)
+str(sycamore_water_quality)
+sycamore_do$datetime<-as.POSIXct(syamore_do$startDateTime,tz="MST")
+sycamore_do<-sycamore_water_quality$waq_instantaneous[,c("startDateTime","dissolvedOxygen","dissolvedOxygenSaturation")]#
+#
+sycamore_do$datetime<-as.POSIXct(syamore_do$startDateTime,tz="MST")
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")
+head(sycamore_do)
+head(sycamore_temp)
+sycamore_temp<-sycamore_temperature$TSW_5min[,c("startDateTime","surfWaterTempMean")]
+head(sycamore_temp)
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")#
+sycamore_temp$datetime<-as.POSIXct(sycamore_temp$startDateTime,tz="MST")
+sycamore_temp<-sycamore_temperature$TSW_5min[,c("startDateTime","surfWaterTempMean")]#
+sycamore_do<-sycamore_water_quality$waq_instantaneous[,c("startDateTime","dissolvedOxygen","dissolvedOxygenSaturation")]#
+#
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")#
+sycamore_temp$datetime<-as.POSIXct(sycamore_temp$startDateTime,tz="MST")#
+#
+sycamore_do$temp_c<-na.approx(sycamore_temp$surfWaterTempMean,rule=2)
+?na.approx
+??na.approx
+install.packages("streamMetabolizer", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("neonUtilities", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("zoo")#
+#
+library(streamMetabolizer)#
+library(neonUtilities)#
+library(zoo)
+sycamore_do$temp_c<-na.approx(sycamore_temp$surfWaterTempMean,rule=2)
+?na.approx
+sycamore_do$temp_c<-na.approx(sycamore_temp$surfWaterTempMean,rule=2,na.rm=FALSE)
+sycamore_do<-merge(sycamore_do,sycamore_temp,all.x=TRUE,all.y=TRUE,by="datetime")
+sycamore_do$surfWaterTempMean<-na.approx(sycamore_do$surfWaterTempMean,rule=2,na.rm=FALSE)
+head(sycamore_do)
+sycamore_do$surfWaterTempMean<-na.approx(sycamore_do$surfWaterTempMean,rule=2,na.rm=FALSE)#
+sycamore_do<-subset(sycamore_do,!is.na(dissolvedOxygen),select=c("datetime","dissolvedOxygen","dissolvedOxygenSaturation","surfWaterTempMean")
+)
+head(sycamore_do)
+nrow(sycamore_do)
+head(sycamore_depth)
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")#
+sycamore_temp$datetime<-as.POSIXct(sycamore_temp$startDateTime,tz="MST")#
+sycamore_depth$datetime<-as.POSIXct(sycamore_depth$startDateTime,tz="MST")#
+#
+sycamore_do<-merge(sycamore_do,sycamore_temp,all.x=TRUE,all.y=TRUE,by="datetime")#
+#
+sycamore_do$surfWaterTempMean<-na.approx(sycamore_do$surfWaterTempMean,rule=2,na.rm=FALSE)#
+sycamore_do<-subset(sycamore_do,!is.na(dissolvedOxygen),select=c("datetime","dissolvedOxygen","dissolvedOxygenSaturation","surfWaterTempMean"))#
+#
+sycamore<-(sycamore_do,sycamore_depth[,c("datetime","discharge_cms")],by="datetime",all.x=TRUE,all.y=TRUE)
+sycamore_depth <- loadByProduct(dpID="DP1.20016.001", site="SYCA", package="expanded",check.size=F)$EOS_5_min[,c("startDateTime","surfacewaterElevMean")]#
+sycamore_water_quality <- loadByProduct(dpID="DP1.20288.001", site="SYCA", package="expanded",check.size=F)#
+sycamore_discharge <- loadByProduct(dpID="DP1.20048.001", site="SYCA", package="expanded",check.size=F)$dsc_fieldData#
+sycamore_temperature <- loadByProduct(dpID="DP1.20053.001", site="SYCA", package="expanded",check.size=F)#
+rating_curve<-lm(log10(totalDischarge+1)~streamStage,sycamore_discharge)#
+sycamore_depth$streamStage<-sycamore_depth$surfacewaterElevMean-643#
+sycamore_depth$discharge_cms<-(10^(predict(rating_curve,newdata=sycamore_depth)))/1000#
+#
+sycamore_temp<-sycamore_temperature$TSW_5min[,c("startDateTime","surfWaterTempMean")]#
+sycamore_do<-sycamore_water_quality$waq_instantaneous[,c("startDateTime","dissolvedOxygen","dissolvedOxygenSaturation")]#
+#
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")#
+sycamore_temp$datetime<-as.POSIXct(sycamore_temp$startDateTime,tz="MST")#
+sycamore_depth$datetime<-as.POSIXct(sycamore_depth$startDateTime,tz="MST")#
+#
+sycamore_do<-merge(sycamore_do,sycamore_temp,all.x=TRUE,all.y=TRUE,by="datetime")#
+#
+sycamore_do$surfWaterTempMean<-na.approx(sycamore_do$surfWaterTempMean,rule=2,na.rm=FALSE)#
+sycamore_do<-subset(sycamore_do,!is.na(dissolvedOxygen),select=c("datetime","dissolvedOxygen","dissolvedOxygenSaturation","surfWaterTempMean"))#
+#
+sycamore<-(sycamore_do,sycamore_depth[,c("datetime","discharge_cms")],by="datetime",all.x=TRUE,all.y=TRUE)
+head(sycamore_depth)
+sycamore<-merge(sycamore_do,sycamore_depth[,c("datetime","streamStage","discharge_cms")],by="datetime",all.x=TRUE,all.y=TRUE)
+sycamore$streamStage<-na.approx(sycamore$streamStage,rule=2,na.rm=FALSE)#
+sycamore$discharge_cms<-na.approx(sycamore$discharge_cms,rule=2,na.rm=FALSE)
+sycamore<-subset(sycamore,!is.na(dissolvedOxygen))
+sycamore
+head(sycamore)
+tail(sycamore)
+subset(sycamore,datetime>"2020-02-15")
+sycamore_new<-subset(sycamore,datetime>"2020-02-15")
+head(sycamore_new)
+sycamore_new$solar.time <- streamMetabolizer::calc_solar_time(sycamore_new$datetime, longitude=-112)
+head(sycamore_new)
+head(sycamore_water_quality)
+str(sycamore_water_quality)
+calc_light(sycamore_new$solar.time, 33.8, -112, max.PAR = u(2326,#
+  "umol m^-2 s^-1"), attach.units = is.unitted(solar.time))
+?calc_light
+library(streamMetabolizer)
+install.packages("streamMetabolizer", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("neonUtilities", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("zoo", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("ggplot2", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+#
+library(streamMetabolizer)
+?calc_light
+streamMetabolizer::calc_light(sycamore_new$solar.time, 33.8, -112, max.PAR = u(2326,#
+  "umol m^-2 s^-1"), attach.units = is.unitted(solar.time))
+sycamore_new$light<- lightest(time=sycamore_new$solar.time, lat=33.8,  longobs=-112, longstd= 75, year="2020-01-01")
+head(sycamore_new)
+sycamore_new$light
+?streamMetabolizer::calc_light
+?calc_light
+sycamore_new$light<- lightest(time=as.chron(sycamore_new$solar.time), lat=33.8,  longobs=-112, longstd= 75, year="2020-01-01")
+streamMetabolizer::calc_light(sycamore_new$solar.time, 33.8, -112)
+sycamore_new$light<-streamMetabolizer::calc_light(sycamore_new$solar.time, 33.8, -112)
+head(sycamore_new)
+sycamore_new_format<-sycamore_new[,c("solar.time","dissolvedOxygen","dissolvedOxygenSaturatin","streamStage","surfWaterTempMean","light","discharge_cms")]
+sycamore_new_format<-sycamore_new[,c("solar.time","dissolvedOxygen","dissolvedOxygenSaturation","streamStage","surfWaterTempMean","light","discharge_cms")]
+names(sycamore_new_format)<-c("solar.time","DO.obs","DO.sat","depth","temp.water","light","discharge")
+ggplot(sycamore_new_format,aes(solar.time,light))+#
+geom_point(size=2)
+library(ggplot2)
+ggplot(sycamore_new_format,aes(solar.time,light))+#
+geom_point(size=2)
+plot(sycamore_new_format$solar.time,sycamore_new_format$light)
+sycamore_new<-subset(sycamore,datetime>"2020-02-15" & datetime<"2020-02-23")#
+sycamore_new$solar.time <- streamMetabolizer::calc_solar_time(sycamore_new$datetime, longitude=-112)#
+#
+sycamore_new$light<-streamMetabolizer::calc_light(sycamore_new$solar.time, 33.8, -112)#
+#
+sycamore_new_format<-sycamore_new[,c("solar.time","dissolvedOxygen","dissolvedOxygenSaturation","streamStage","surfWaterTempMean","light","discharge_cms")]#
+#
+names(sycamore_new_format)<-c("solar.time","DO.obs","DO.sat","depth","temp.water","light","discharge")#
+#
+ggplot(sycamore_new_format,aes(solar.time,light))+#
+geom_point(size=2)
+plot(sycamore_new_format$solar.time,sycamore_new_format$light)
+?calc_solar_time
+oxygen_plot<-ggplot(sycamore_new_format,aes(solar.time,((DO.obs/DO.sat)*100)))+#
+geom_point(size=2)+#
+xlab("")+#
+ylab("Percent Dissolved Oxygen")
+# Load packages.#
+library(StreamPULSE)#
+library(streamMetabolizer)#
+#
+# View all available sites and their metadata#
+query_available_data(region='all')#
+#
+# View all variables at a site, and full available time range for that site.#
+# Note that USGS depth and discharge data may be available for sites that#
+# have associated USGS gage IDs, even if depth and discharge do not appear among#
+# the variables returned here. If USGS data are available, they will be acquired#
+# automatically when you use prep_metabolism below. Likewise, air pressure and#
+# PAR estimates will be automatically acquired below, if necessary.#
+query_available_data(region='AZ', site='OC')#
+#
+# Select site and date range for which to acquire StreamPULSE data.#
+# site_code is a combination of regionID and siteID#
+site_code = 'AZ_OC'#
+start_date = '2018-06-20'#
+end_date = '2018-07-01'#
+#
+# Download data from streampulse.#
+# Token parameter not needed if downloading public data.#
+# If you need a token, contact Mike at streampulse.info@gmail.com#
+sp_data = request_data(sitecode=site_code,#
+    startdate=start_date, enddate=end_date)#
+#
+# Choose model type for streamMetabolizer.#
+# Only "bayes" is available at this time.#
+model_type = 'bayes'#
+#
+# Which modeling framework to use:#
+# Use "streamMetabolizer" (the default); "BASE" is not available at this time.#
+model_name = 'streamMetabolizer'#
+#
+# Format data for metabolism modeling.#
+sp_data_prepped = prep_metabolism(d=sp_data, type=model_type,#
+    model=model_name)#
+#
+# Fit metabolism model and generate predictions (calls streamMetabolizer#
+# functions: mm_name, specs, metab, predict_metab).#
+model_fit = fit_metabolism(sp_data_prepped)#
+#
+# Plot results and diagnostics (Note that this may not work properly if your#
+# data do not all occur within the same calendar year.)#
+# You can explore all StreamPULSE model results at#
+# http://data.streampulse.org:3838/streampulse_diagnostic_plots/#
+plot_output(model_fit)
+# Load packages.#
+library(StreamPULSE)#
+library(streamMetabolizer)#
+#
+# View all available sites and their metadata#
+query_available_data(region='all')#
+#
+# View all variables at a site, and full available time range for that site.#
+# Note that USGS depth and discharge data may be available for sites that#
+# have associated USGS gage IDs, even if depth and discharge do not appear among#
+# the variables returned here. If USGS data are available, they will be acquired#
+# automatically when you use prep_metabolism below. Likewise, air pressure and#
+# PAR estimates will be automatically acquired below, if necessary.#
+query_available_data(region='AZ', site='OC')#
+#
+# Select site and date range for which to acquire StreamPULSE data.#
+# site_code is a combination of regionID and siteID#
+site_code = 'AZ_OC'#
+start_date = '2018-07-01'#
+end_date = '2018-07-05'#
+#
+# Download data from streampulse.#
+# Token parameter not needed if downloading public data.#
+# If you need a token, contact Mike at streampulse.info@gmail.com#
+sp_data = request_data(sitecode=site_code,#
+    startdate=start_date, enddate=end_date)#
+#
+# Choose model type for streamMetabolizer.#
+# Only "bayes" is available at this time.#
+model_type = 'bayes'#
+#
+# Which modeling framework to use:#
+# Use "streamMetabolizer" (the default); "BASE" is not available at this time.#
+model_name = 'streamMetabolizer'#
+#
+# Format data for metabolism modeling.#
+sp_data_prepped = prep_metabolism(d=sp_data, type=model_type,#
+    model=model_name)#
+#
+# Fit metabolism model and generate predictions (calls streamMetabolizer#
+# functions: mm_name, specs, metab, predict_metab).#
+model_fit = fit_metabolism(sp_data_prepped)#
+#
+# Plot results and diagnostics (Note that this may not work properly if your#
+# data do not all occur within the same calendar year.)#
+# You can explore all StreamPULSE model results at#
+# http://data.streampulse.org:3838/streampulse_diagnostic_plots/#
+plot_output(model_fit)
+# Load packages.#
+library(StreamPULSE)#
+library(streamMetabolizer)#
+#
+# View all available sites and their metadata#
+query_available_data(region='all')#
+#
+# View all variables at a site, and full available time range for that site.#
+# Note that USGS depth and discharge data may be available for sites that#
+# have associated USGS gage IDs, even if depth and discharge do not appear among#
+# the variables returned here. If USGS data are available, they will be acquired#
+# automatically when you use prep_metabolism below. Likewise, air pressure and#
+# PAR estimates will be automatically acquired below, if necessary.#
+query_available_data(region='AZ', site='OC')#
+#
+# Select site and date range for which to acquire StreamPULSE data.#
+# site_code is a combination of regionID and siteID#
+site_code = 'AZ_OC'#
+start_date = '2018-06-20'#
+end_date = '2018-06-25'#
+#
+# Download data from streampulse.#
+# Token parameter not needed if downloading public data.#
+# If you need a token, contact Mike at streampulse.info@gmail.com#
+sp_data = request_data(sitecode=site_code,#
+    startdate=start_date, enddate=end_date)#
+#
+# Choose model type for streamMetabolizer.#
+# Only "bayes" is available at this time.#
+model_type = 'bayes'#
+#
+# Which modeling framework to use:#
+# Use "streamMetabolizer" (the default); "BASE" is not available at this time.#
+model_name = 'streamMetabolizer'#
+#
+# Format data for metabolism modeling.#
+sp_data_prepped = prep_metabolism(d=sp_data, type=model_type,#
+    model=model_name)#
+#
+# Fit metabolism model and generate predictions (calls streamMetabolizer#
+# functions: mm_name, specs, metab, predict_metab).#
+model_fit = fit_metabolism(sp_data_prepped)#
+#
+# Plot results and diagnostics (Note that this may not work properly if your#
+# data do not all occur within the same calendar year.)#
+# You can explore all StreamPULSE model results at#
+# http://data.streampulse.org:3838/streampulse_diagnostic_plots/
+plot_metab_preds(mm)
+plot_metab_preds(model_fit)
+model_fit
+plot(model_fit)
+plot_metab(model_fit)
+str(model_fit)
+plot_output(model_fit)
+range(sycamore_new_format$datetime)[1])
+#installs packages, run once only.#
+install.packages("streamMetabolizer", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("neonUtilities", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("zoo", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("ggplot2", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+install.packages("cowplot", dependencies=TRUE, repos=c("https://owi.usgs.gov/R","https://cran.rstudio.com"))#
+#loads libraries for getting started#
+library(streamMetabolizer)#
+library(neonUtilities)#
+library(zoo)#
+library(ggplot2)#
+library(cowplot)#
+#
+#downloading data from NEON#
+sycamore_depth <- loadByProduct(dpID="DP1.20016.001", site="SYCA", package="expanded",check.size=F,startdate="2020-01")$EOS_5_min[,c("startDateTime","surfacewaterElevMean")]#
+sycamore_water_quality <- loadByProduct(dpID="DP1.20288.001", site="SYCA", package="expanded",check.size=F,startdate="2020-01")#
+sycamore_discharge <- loadByProduct(dpID="DP1.20048.001", site="SYCA", package="expanded",check.size=F,startdate="2020-01")$dsc_fieldData#
+sycamore_temperature <- loadByProduct(dpID="DP1.20053.001", site="SYCA", package="expanded",check.size=F,startdate="2020-01")#
+#
+#coverting depth measurements into measurements of streamflow (discharge) using a rating curve#
+rating_curve<-lm(log10(totalDischarge+1)~streamStage,sycamore_discharge)#
+sycamore_depth$streamStage<-sycamore_depth$surfacewaterElevMean-643#
+sycamore_depth$discharge_cms<-(10^(predict(rating_curve,newdata=sycamore_depth)))/1000#
+#
+sycamore_temp<-sycamore_temperature$TSW_5min[,c("startDateTime","surfWaterTempMean")]#
+sycamore_do<-sycamore_water_quality$waq_instantaneous[,c("startDateTime","dissolvedOxygen","dissolvedOxygenSaturation")]#
+#
+sycamore_do$datetime<-as.POSIXct(sycamore_do$startDateTime,tz="MST")#
+sycamore_temp$datetime<-as.POSIXct(sycamore_temp$startDateTime,tz="MST")#
+sycamore_depth$datetime<-as.POSIXct(sycamore_depth$startDateTime,tz="MST")#
+#
+sycamore_do<-merge(sycamore_do,sycamore_temp,all.x=TRUE,all.y=TRUE,by="datetime")#
+#
+sycamore_do$surfWaterTempMean<-na.approx(sycamore_do$surfWaterTempMean,rule=2,na.rm=FALSE)#
+sycamore_do<-subset(sycamore_do,!is.na(dissolvedOxygen),select=c("datetime","dissolvedOxygen","dissolvedOxygenSaturation","surfWaterTempMean"))#
+#
+sycamore<-merge(sycamore_do,sycamore_depth[,c("datetime","streamStage","discharge_cms")],by="datetime",all.x=TRUE,all.y=TRUE)#
+sycamore$streamStage<-na.approx(sycamore$streamStage,rule=2,na.rm=FALSE)#
+sycamore$discharge_cms<-na.approx(sycamore$discharge_cms,rule=2,na.rm=FALSE)#
+sycamore<-subset(sycamore,!is.na(dissolvedOxygen))#
+#
+sycamore_new<-subset(sycamore,datetime>"2020-02-15" & datetime<"2020-02-23")#
+sycamore_new$solar.time <- streamMetabolizer::calc_solar_time(sycamore_new$datetime, longitude=-112)#
+sycamore_new$light<-streamMetabolizer::calc_light(sycamore_new$solar.time, 33.8, -112)#
+sycamore_new$discharge_cms<-rollmean(sycamore_new$discharge_cms,100,na.pad=TRUE)#
+#
+sycamore_new_format<-sycamore_new[!duplicated(sycamore_new$solar.time) & !is.na(sycamore_new$discharge),c("solar.time","dissolvedOxygen","dissolvedOxygenSaturation","streamStage","surfWaterTempMean","light","discharge_cms")]#
+#
+names(sycamore_new_format)<-c("solar.time","DO.obs","DO.sat","depth","temp.water","light","discharge")#
+#
+light_plot<-ggplot(sycamore_new_format,aes(solar.time,light))+#
+geom_point(size=2)+#
+xlab("")+#
+ylab("Light (umol m^-2 s^-1)")#
+#
+discharge_plot<-ggplot(sycamore_new_format,aes(solar.time,discharge))+#
+geom_point(size=2)+#
+xlab("")+#
+ylab("Discharge (m^3 s^-1)")#
+#
+oxygen_plot<-ggplot(sycamore_new_format,aes(solar.time,((DO.obs/DO.sat)*100)))+#
+geom_point(size=2)+#
+xlab("")+#
+ylab("Percent Dissolved Oxygen")#
+#
+plot_grid(oxygen_plot,light_plot,discharge_plot,align="hv",ncol=1)
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00")
+)
+?chron
+??chron
+library(chron)
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00")
+)
+t0
+range(sycamore_new_format$datetime)[1]
+sycamore_new_format<-subset(sycamore_new_format$datetime,!is.infite(datetime))#
+#
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00"))
+t0
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00"))#
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[2],"%m/%d/%y"), times="06:00:00"))#
+cindex<-seq(t0,t1+(1/24/60),by=(1/24/4))#
+ci<-as.data.frame(cindex)
+ci
+ci<-as.data.frame(cindex)#
+ci$datematch<-as.POSIXct(ci$cindex,tz="MST")
+head(ci)
+?na.approx
+na.approx(ci,sycamore_new_format)
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00"))#
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[2],"%m/%d/%y"), times="06:00:00"))#
+cindex<-seq(t0,t1+(1/24/60),by=(1/24/4))#
+ci<-as.data.frame(cindex)#
+ci$solar.time<-as.POSIXct(ci$cindex,tz="MST")#
+na.approx(ci,xout=sycamore_new_format)
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[1],"%m/%d/%y"), times="22:00:00"))#
+t0<-chron(dates=format(as.Date(range(sycamore_new_format$datetime)[2],"%m/%d/%y"), times="06:00:00"))#
+cindex<-seq(t0,t1+(1/24/60),by=(1/24/4))#
+ci<-as.data.frame(cindex)#
+ci$solar.time<-as.POSIXct(ci$cindex,tz="MST")
+ci
+#Basic StreamPULSE data processing pipeline#
+#Adapted from Mike Vlah (vlahm13@gmail.com)#
+install.packages("pkgbuild") # pkgbuild is not available (for R version 3.5.0)#
+install.packages("devtools") # make sure you have the latest version from CRAN#
+library(devtools) # load package#
+devtools::install_github("r-lib/pkgbuild") # install updated version of pkgbuild from GitHub#
+library(pkgbuild) # load package#
+find_rtools() # should be TRUE, assuming you have Rtools 3.5
+install.packages("rtools")
+install.packages("Rtools")
+library(pkgbuild) # load package
+# Install StreamPULSE pipeline tools from GitHub#
+# The StreamPULSE package is in development and changes frequently!#
+# If something doesn't work as expected, first try reinstalling.#
+install_github('streampulse/StreamPULSE', dependencies=TRUE)
+# Install latest version of streamMetabolizer.#
+install.packages('streamMetabolizer', dependencies=TRUE,#
+    repos=c('https://owi.usgs.gov/R','https://cran.rstudio.com'))#
+#
+# Load packages.#
+library(StreamPULSE)#
+library(streamMetabolizer)
+library(dplyr)#
+library(dataRetrieval)#
+library(gdata)#
+library(stringr)#
+library(parallel)#
+library(dplyr)#
+library(foreign)#
+library(igraph)#
+library(reshape2)#
+library(doBy)#
+library(progress)#
+#!/usr/bin/env Rscript#
+args = commandArgs(TRUE)#
+#
+mean_na<-function(x){mean(x,na.rm=TRUE)}#
+sd_na<-function(x){sd(x,na.rm=TRUE)}#
+sum_na<-function(x){sum(x,na.rm=TRUE)}#
+#
+se <- function(x) sqrt(var(x)/length(x))#
+ptm <- proc.time()#
+#
+netc<-function(g1_p){#
+	tunique<-summaryBy(positions~to,g1_p,FUN=c("max"))#
+	tunique<-tunique[order(tunique$positions),]#
+	total<-nrow(tunique)#
+#	pb <- progress_bar$new(format = "[:bar] :current/:total (:percent)", total = total)#
+#	pb$tick(0)#
+	for(j in 1:nrow(tunique)){#
+#		pb$tick(1)#
+		g1_t<-subset(g1_p,to==tunique$to[j])#
+		if(sum(g1_p$to%in%unique(g1_t$from))>0){#
+			temp0<-g1_p[g1_p$to%in%unique(g1_t$from),]#
+			temp0$q_cms<-temp0$v_ms*temp0$area_m2#
+			temp0$q_cms_prop<-temp0$q_cms/sum(temp0$q_cms)#
+			g1_p$res_d_cumu[g1_p$to==tunique$to[j]]<-sum(temp0$q_cms_prop*temp0$res_d_cumu)+g1_t$residence_d[1]#
+		}else{g1_p$res_d_cumu[g1_p$to==tunique$to[j]]<-g1_t$residence_d[1]}#
+	}#
+	return(data.frame(rep=unique(temp0$rep),residence_d=g1_p$res_d_cumu[which(g1_p$positions==max(g1_p$positions))]))#
+}
+usgs<-readRDS("/Users/jhosen/gdrive/nasqan_data/usgs_geometry (1)/usgs_geometry_compiled_20180502.rdata")
+#usgs[usgs$pid=="p05587450",]$COMID<-"880544"#
+usgs[usgs$pid=="p02343801",]$COMID<-"2310429"#
+usgs[usgs$pid=="p07010000",]$COMID<-"3624735"	#
+usgs[usgs$pid=="p07383500",]$COMID<-"15143238"	#
+usgs[usgs$pid=="p11313460",]$COMID<-"1889664"	#
+usgs[usgs$pid=="p11303500",]$COMID<-"1897416"	#
+usgs[usgs$pid=="p01578310",]$COMID<-"4726595"	#
+usgs[usgs$pid=="p01576000",]$COMID<-"4722221"#
+usgs[usgs$pid=="p05389500",]$COMID<-"13211732"#
+usgs[usgs$pid=="p05487520",]$COMID<-"22254207"#
+usgs[usgs$pid=="p05476590",]$COMID<-"6587223"#
+#usgs[usgs$pid=="p05587455",]$COMID<-"880544"#
+usgs[usgs$pid=="p05536290",]$COMID<-"13463917"#
+usgs[usgs$pid=="p05587450",]$COMID<-"880478"#
+#usgs[usgs$pid=="p05536118",]$COMID<-"13463951"#
+usgs[usgs$pid=="p05536118",]$COMID<-NA#
+#usgs[usgs$pid=="p05422000",]$COMID<-"14796105"#
+usgs[usgs$pid=="p05422000",]$COMID<-NA#
+usgs[usgs$pid=="p06891000",]$COMID<-"3729539"#
+usgs[usgs$pid=="p06805500",]$COMID<-"17416032"#
+usgs[usgs$pid=="p06903900",]$COMID<-"5122350"#
+usgs[usgs$pid=="p07021000",]$COMID<-"5029391"#
+usgs[usgs$pid=="p07165570",]$COMID<-"371285"#
+usgs[usgs$pid=="p07182250",]$COMID<-"20906747"#
+usgs[usgs$pid=="p07094500",]$COMID<-"920981"#
+#
+usgs[usgs$pid=="p06770500",]$COMID<-"7268297"#
+#usgs[usgs$pid=="p07047810",]$COMID<-""#
+#usgs[usgs$pid=="p06792500",]$COMID<-""#
+#usgs[usgs$pid=="p07381600",]$COMID#
+usgs[usgs$pid=="p07383500",]$COMID<-"15166453"#
+#
+usgs[usgs$pid=="p06792500",]$COMID<-"17309896"#
+#
+usgs[usgs$pid=="p07346080",]$COMID<-"1018141"#
+usgs[usgs$pid=="p07250085",]$COMID<-"1543899"#
+#usgs[usgs$pid=="p06775900",]$COMID<-"17391613"#
+usgs[usgs$pid=="p07250085",]$COMID<-"1543899"#
+#usgs[usgs$pid=="p07145500",]$COMID<-"21145238"#
+#
+#usgs[usgs$pid=="p07386200",]$COMID<-""#
+usgs[usgs$pid=="p03051000",]$COMID<-"4351512"#
+#usgs[usgs$pid=="p11447650",]$COMID<-""#
+#
+usgs[usgs$pid=="p13075010",]$COMID<-NA#
+#
+#usgs[usgs$pid=="p14211720",]$COMID<-""#
+usgs[usgs$pid=="p11376000",]$COMID<-"948020237"#
+#site_id<-"p01189995"#
+#selcom<-"6109717"#
+#
+site_id<-args[1]#
+selcom<-args[2]#
+bid_pid<-args[3]#
+#
+#site_id<-"p02224940"#
+#selcom<-"14348516"#
+#bid_pid<-"p02224940"#
+#
+print(site_id)#
+print(selcom)#
+print(bid_pid)#
+#
+#stations_hud<-subset(stations,big_pid=="p02359170")#
+#stations_hud<-subset(stations,big_pid==paste(site_id)|big_pid=="p05587455")#
+#stations_hud<-subset(stations,big_pid==paste(site_id))#
+#
+#stations_hud$pid<-stations_hud$small_pid#
+#
+#hud_stat_usgs<-merge(stations_hud,usgs,by="pid",all.x=TRUE)#
+hud_stat_usgs<-usgs#
+hud_stat_usgs<-subset(hud_stat_usgs,!is.na(v_ms_med)&!is.na(area_m2_med))#
+#hud_stat_usgs4<-subset(hud_stat_usgs,Max.Stream.Order==4)#
+#p02359170 - 2298964#
+#subset(hud_stat_usgs,pid=="p02359170")#
+#setwd("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes")#
+#dbfs<-list.files(pattern="PlusFlow.dbf",recursive=TRUE)#
+#rm(flowbf)#
+#for(i in 1:length(dbfs)){#
+#	fbf<-read.dbf(paste("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes/",dbfs[i],sep=""))#
+#	tbfn<-gsub(".dbf","",paste(dbfs[i]),fixed=TRUE)#
+#	assign(paste(tbfn),tbf)#
+#	if(!exists("flowbf")){#
+#		flowbf<-fbf[0,]#
+#	}#
+	#flowbf<-bind_rows(flowbf,fbf)#
+	#}#
+#
+#flowbf[is.na(flowbf$FROMCOMID),]$FROMCOMID<-flowbf[is.na(flowbf$FROMCOMID),]$FromComID#
+#flowbf[is.na(flowbf$TOCOMID),]$TOCOMID<-flowbf[is.na(flowbf$TOCOMID),]$ToComID#
+#setwd("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes")#
+#dbfs<-list.files(pattern="PlusFlowlineVAA.dbf",recursive=TRUE)#
+#rm(flowvbf)#
+#for(i in 1:length(dbfs)){#
+#	fvbf<-read.dbf(paste("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes/",dbfs[i],sep=""))#
+#	tbfn<-gsub(".dbf","",paste(dbfs[i]),fixed=TRUE)#
+#	assign(paste(tbfn),tbf)#
+#	if(!exists("flowvbf")){#
+#		flowvbf<-fvbf[0,]#
+#	}#
+#	flowvbf<-bind_rows(flowvbf,fvbf)#
+#}#
+#saveRDS(flowbf,"~/Google Drive/nasqan_data/to_server/flowbf.rds")#
+#saveRDS(flowvbf,"~/Google Drive/nasqan_data/to_server/flowvbf.rds")#
+#flowbf<-readRDS("~/project/nasqan/flowbf.rds")#
+#flowvbf<-readRDS("~/project/nasqan/flowvbf.rds")#
+flowbf<-readRDS("~/Google Drive/nasqan_data/to_server/flowbf.rds")#
+flowvbf<-readRDS("~/Google Drive/nasqan_data/to_server/flowvbf.rds")#
+usgs_geom<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_equations_20180429_list.rdata")#
+#
+library(openxlsx)#
+sites<-read.xlsx("/Users/prime/Google Drive/nasqan_data/data/final_datasets/site_watershed_table_201906010.xlsx")#
+#
+usgs_geom[[paste(sites$pid)]]#
+#
+keepers<-usgs_geom[names(usgs_geom) %in% sites$pid]#
+df<-do.call(rbind,keepers)#
+df$site<-substr(row.names(df),1,9)#
+#
+library(reshape2)#
+dfm<-melt(df[,c("site","depth_m","width_m","v_ms","per")],id.vars=c("site","per"))#
+dfm$variable2<-dfm$variable#
+dfm$variable2<-gsub("depth_m","Depth~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("width_m","Width~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("v_ms","V~(m/s)",dfm$variable2,fixed=TRUE)#
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=22,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=22,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=22),#
+		axis.title.y = element_text(size=22,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=22,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+usgs_geom<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_equations_20180429_list.rdata")
+usgs_geom<-readRDS("/Users/jhosen/gdrive/nasqan_data/usgs_geometry_equations_20180429_list.rdata")
+library(dplyr)#
+library(dataRetrieval)#
+library(gdata)#
+library(stringr)#
+library(parallel)#
+library(dplyr)#
+library(foreign)#
+library(igraph)#
+library(reshape2)#
+library(doBy)#
+library(progress)#
+#!/usr/bin/env Rscript#
+args = commandArgs(TRUE)#
+#
+mean_na<-function(x){mean(x,na.rm=TRUE)}#
+sd_na<-function(x){sd(x,na.rm=TRUE)}#
+sum_na<-function(x){sum(x,na.rm=TRUE)}#
+#
+se <- function(x) sqrt(var(x)/length(x))#
+ptm <- proc.time()#
+#
+netc<-function(g1_p){#
+	tunique<-summaryBy(positions~to,g1_p,FUN=c("max"))#
+	tunique<-tunique[order(tunique$positions),]#
+	total<-nrow(tunique)#
+#	pb <- progress_bar$new(format = "[:bar] :current/:total (:percent)", total = total)#
+#	pb$tick(0)#
+	for(j in 1:nrow(tunique)){#
+#		pb$tick(1)#
+		g1_t<-subset(g1_p,to==tunique$to[j])#
+		if(sum(g1_p$to%in%unique(g1_t$from))>0){#
+			temp0<-g1_p[g1_p$to%in%unique(g1_t$from),]#
+			temp0$q_cms<-temp0$v_ms*temp0$area_m2#
+			temp0$q_cms_prop<-temp0$q_cms/sum(temp0$q_cms)#
+			g1_p$res_d_cumu[g1_p$to==tunique$to[j]]<-sum(temp0$q_cms_prop*temp0$res_d_cumu)+g1_t$residence_d[1]#
+		}else{g1_p$res_d_cumu[g1_p$to==tunique$to[j]]<-g1_t$residence_d[1]}#
+	}#
+	return(data.frame(rep=unique(temp0$rep),residence_d=g1_p$res_d_cumu[which(g1_p$positions==max(g1_p$positions))]))#
+}#
+#theme_ts_space<-theme_grey() +#
+#	theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+#		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=18),#
+#		legend.title     = element_text(size=18),#
+#		axis.text.x = element_text(size=13,colour="black",hjust=1,angle=45),#
+#		axis.text.y = element_text(size=13,colour="black",vjust=.3),#
+#		axis.title.x = element_text(size=13),#
+#		axis.title.y = element_text(size=13)#
+#		legend.position  = c(0.8,0.8)#
+#		legend.position  = "right"#
+#		)#
+se<-function(x){sd(x)/sqrt(length(x))}#
+#
+#pids<-read.csv("~/project/nasqan/pid_list.csv",header=TRUE)#
+#stations<-read.csv("~/project/nasqan/Nasqan_stations3.csv",header=TRUE)#
+#usgs_1<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_1_med.rdata")#
+#usgs_2<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_2_med.rdata")#
+#usgs_3<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_3_med.rdata")#
+#usgs_4<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_4_med.rdata")#
+#usgs_5<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_5_med.rdata")#
+#usgs_6<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_6_med.rdata")#
+#usgs_7<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_7_med.rdata")#
+#usgs_9<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_9_med.rdata")#
+#usgs_10<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_10_med.rdata")#
+#usgs_11<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_11_med.rdata")#
+#usgs<-bind_rows(usgs,usgs_11)#
+#
+#pids2<-merge(pids,usgs[,c("pid","COMID")])#
+#
+#usgs<-bind_rows(usgs_1,usgs_2,usgs_3,usgs_4,usgs_5,usgs_6,usgs_7,usgs_9)#
+#
+#saveRDS(usgs,"/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_compiled.rdata")#
+#usgs<-readRDS("~/project/nasqan/usgs_geometry_compiled.rdata")#
+#usgs<-readRDS("/Users/prime/Google Drive/nasqan_data/usgs_geometry/usgs_geometry_compiled.rdata")#
+usgs<-readRDS("/Users/jhosen/gdrive/nasqan_data/usgs_geometry (1)/usgs_geometry_compiled_20180502.rdata")#
+#usgs[usgs$pid=="p05587450",]$COMID<-"880544"#
+usgs[usgs$pid=="p02343801",]$COMID<-"2310429"#
+usgs[usgs$pid=="p07010000",]$COMID<-"3624735"	#
+usgs[usgs$pid=="p07383500",]$COMID<-"15143238"	#
+usgs[usgs$pid=="p11313460",]$COMID<-"1889664"	#
+usgs[usgs$pid=="p11303500",]$COMID<-"1897416"	#
+usgs[usgs$pid=="p01578310",]$COMID<-"4726595"	#
+usgs[usgs$pid=="p01576000",]$COMID<-"4722221"#
+usgs[usgs$pid=="p05389500",]$COMID<-"13211732"#
+usgs[usgs$pid=="p05487520",]$COMID<-"22254207"#
+usgs[usgs$pid=="p05476590",]$COMID<-"6587223"#
+#usgs[usgs$pid=="p05587455",]$COMID<-"880544"#
+usgs[usgs$pid=="p05536290",]$COMID<-"13463917"#
+usgs[usgs$pid=="p05587450",]$COMID<-"880478"#
+#usgs[usgs$pid=="p05536118",]$COMID<-"13463951"#
+usgs[usgs$pid=="p05536118",]$COMID<-NA#
+#usgs[usgs$pid=="p05422000",]$COMID<-"14796105"#
+usgs[usgs$pid=="p05422000",]$COMID<-NA#
+usgs[usgs$pid=="p06891000",]$COMID<-"3729539"#
+usgs[usgs$pid=="p06805500",]$COMID<-"17416032"#
+usgs[usgs$pid=="p06903900",]$COMID<-"5122350"#
+usgs[usgs$pid=="p07021000",]$COMID<-"5029391"#
+usgs[usgs$pid=="p07165570",]$COMID<-"371285"#
+usgs[usgs$pid=="p07182250",]$COMID<-"20906747"#
+usgs[usgs$pid=="p07094500",]$COMID<-"920981"#
+#
+usgs[usgs$pid=="p06770500",]$COMID<-"7268297"#
+#usgs[usgs$pid=="p07047810",]$COMID<-""#
+#usgs[usgs$pid=="p06792500",]$COMID<-""#
+#usgs[usgs$pid=="p07381600",]$COMID#
+usgs[usgs$pid=="p07383500",]$COMID<-"15166453"#
+#
+usgs[usgs$pid=="p06792500",]$COMID<-"17309896"#
+#
+usgs[usgs$pid=="p07346080",]$COMID<-"1018141"#
+usgs[usgs$pid=="p07250085",]$COMID<-"1543899"#
+#usgs[usgs$pid=="p06775900",]$COMID<-"17391613"#
+usgs[usgs$pid=="p07250085",]$COMID<-"1543899"#
+#usgs[usgs$pid=="p07145500",]$COMID<-"21145238"#
+#
+#usgs[usgs$pid=="p07386200",]$COMID<-""#
+usgs[usgs$pid=="p03051000",]$COMID<-"4351512"#
+#usgs[usgs$pid=="p11447650",]$COMID<-""#
+#
+usgs[usgs$pid=="p13075010",]$COMID<-NA#
+#
+#usgs[usgs$pid=="p14211720",]$COMID<-""#
+usgs[usgs$pid=="p11376000",]$COMID<-"948020237"#
+#site_id<-"p01189995"#
+#selcom<-"6109717"#
+#
+site_id<-args[1]#
+selcom<-args[2]#
+bid_pid<-args[3]#
+#
+#site_id<-"p02224940"#
+#selcom<-"14348516"#
+#bid_pid<-"p02224940"#
+#
+print(site_id)#
+print(selcom)#
+print(bid_pid)#
+#
+#stations_hud<-subset(stations,big_pid=="p02359170")#
+#stations_hud<-subset(stations,big_pid==paste(site_id)|big_pid=="p05587455")#
+#stations_hud<-subset(stations,big_pid==paste(site_id))#
+#
+#stations_hud$pid<-stations_hud$small_pid#
+#
+#hud_stat_usgs<-merge(stations_hud,usgs,by="pid",all.x=TRUE)#
+hud_stat_usgs<-usgs#
+hud_stat_usgs<-subset(hud_stat_usgs,!is.na(v_ms_med)&!is.na(area_m2_med))#
+#hud_stat_usgs4<-subset(hud_stat_usgs,Max.Stream.Order==4)#
+#p02359170 - 2298964#
+#subset(hud_stat_usgs,pid=="p02359170")#
+#setwd("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes")#
+#dbfs<-list.files(pattern="PlusFlow.dbf",recursive=TRUE)#
+#rm(flowbf)#
+#for(i in 1:length(dbfs)){#
+#	fbf<-read.dbf(paste("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes/",dbfs[i],sep=""))#
+#	tbfn<-gsub(".dbf","",paste(dbfs[i]),fixed=TRUE)#
+#	assign(paste(tbfn),tbf)#
+#	if(!exists("flowbf")){#
+#		flowbf<-fbf[0,]#
+#	}#
+	#flowbf<-bind_rows(flowbf,fbf)#
+	#}#
+#
+#flowbf[is.na(flowbf$FROMCOMID),]$FROMCOMID<-flowbf[is.na(flowbf$FROMCOMID),]$FromComID#
+#flowbf[is.na(flowbf$TOCOMID),]$TOCOMID<-flowbf[is.na(flowbf$TOCOMID),]$ToComID#
+#setwd("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes")#
+#dbfs<-list.files(pattern="PlusFlowlineVAA.dbf",recursive=TRUE)#
+#rm(flowvbf)#
+#for(i in 1:length(dbfs)){#
+#	fvbf<-read.dbf(paste("/Users/prime/Google Drive/nasqan_data/nhd_plus_attributes/",dbfs[i],sep=""))#
+#	tbfn<-gsub(".dbf","",paste(dbfs[i]),fixed=TRUE)#
+#	assign(paste(tbfn),tbf)#
+#	if(!exists("flowvbf")){#
+#		flowvbf<-fvbf[0,]#
+#	}#
+#	flowvbf<-bind_rows(flowvbf,fvbf)#
+#}#
+#saveRDS(flowbf,"~/Google Drive/nasqan_data/to_server/flowbf.rds")#
+#saveRDS(flowvbf,"~/Google Drive/nasqan_data/to_server/flowvbf.rds")#
+#flowbf<-readRDS("~/project/nasqan/flowbf.rds")#
+#flowvbf<-readRDS("~/project/nasqan/flowvbf.rds")#
+flowbf<-readRDS("/Users/jhosen/gdrive/nasqan_data/flowbf.rds")#
+flowvbf<-readRDS("/Users/jhosen/gdrive/nasqan_data/flowvbf.rds")#
+usgs_geom<-readRDS("/Users/jhosen/gdrive/nasqan_data/usgs_geometry_equations_20180429_list.rdata")#
+#
+library(openxlsx)
+library(openxlsx)#
+sites<-read.xlsx("/Users/jhosen/gdrive/nasqan_data/data/final_datasets/site_watershed_table_201906010.xlsx")#
+#
+usgs_geom[[paste(sites$pid)]]#
+#
+keepers<-usgs_geom[names(usgs_geom) %in% sites$pid]#
+df<-do.call(rbind,keepers)#
+df$site<-substr(row.names(df),1,9)#
+#
+library(reshape2)#
+dfm<-melt(df[,c("site","depth_m","width_m","v_ms","per")],id.vars=c("site","per"))#
+dfm$variable2<-dfm$variable#
+dfm$variable2<-gsub("depth_m","Depth~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("width_m","Width~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("v_ms","V~(m/s)",dfm$variable2,fixed=TRUE)
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=22,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=22,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=22),#
+		axis.title.y = element_text(size=22,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=22,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+library(ggplot2)
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=22,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=22,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=22),#
+		axis.title.y = element_text(size=22,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=22,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2#
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+#theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=14,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=14,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=14),#
+		axis.title.y = element_text(size=14,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=14,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		plot.title = element_text(size=15,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=20),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=12,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=12),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=12,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2#
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3#
+usgs_geom_p4<-ggplot(subset(dfm2,site=="p01186500"|site=="p01187300"|site=="p01187800"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p4#
+usgs_geom_p5<-ggplot(subset(dfm2,site=="p01188000"|site=="p01188090"|site=="p01189995"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p5#
+usgs_geom_p6<-ggplot(subset(dfm2,site=="p01193050"|site=="p01463500"|site=="p01479000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p6#
+usgs_geom_p7<-ggplot(subset(dfm2,site=="p01578310"|site=="p02226160"|site=="p02359170"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p7#
+usgs_geom_p8<-ggplot(subset(dfm2,site=="p02470500"|site=="p03303280"|site=="p03374100"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p8#
+usgs_geom_p9<-ggplot(subset(dfm2,site=="p03378500"|site=="p05420500"|site=="p05465500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p9#
+usgs_geom_p10<-ggplot(subset(dfm2,site=="p05490500"|site=="p05586100"|site=="p06610000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p10#
+usgs_geom_p11<-ggplot(subset(dfm2,site=="p06805500"|site=="p07374000"|site=="p07374525"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p11#
+usgs_geom_p12<-ggplot(subset(dfm2,site=="p07381590"|site=="p07381600"|site=="p08116650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p12#
+usgs_geom_p13<-ggplot(subset(dfm2,site=="p09522000"|site=="p11303500"|site=="p11447650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p13#
+usgs_geom_p14<-ggplot(subset(dfm2,site=="p01135300"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p14#
+plots.list = list(usgs_geom_p1,	usgs_geom_p2,	usgs_geom_p3,	usgs_geom_p4, usgs_geom_p5,	usgs_geom_p6,	usgs_geom_p7,	usgs_geom_p8, usgs_geom_p9,	usgs_geom_p10,	usgs_geom_p11,	usgs_geom_p12,	usgs_geom_p13,	usgs_geom_p14)  # Make a list of plots
+head(dfm2)
+unique(dfm2$Name)
+dfm2$Name<-gsub("~at","~at\n",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+usgs_geom_p3
+unique(dfm2$Name)
+library(reshape2)#
+dfm<-melt(df[,c("site","depth_m","width_m","v_ms","per")],id.vars=c("site","per"))#
+dfm$variable2<-dfm$variable#
+dfm$variable2<-gsub("depth_m","Depth~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("width_m","Width~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("v_ms","V~(m/s)",dfm$variable2,fixed=TRUE)#
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub("~at~","~at\n",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+unique(dfm2$Name)
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed(multi_line=TRUE))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+library(reshape2)#
+dfm<-melt(df[,c("site","depth_m","width_m","v_ms","per")],id.vars=c("site","per"))#
+dfm$variable2<-dfm$variable#
+dfm$variable2<-gsub("depth_m","Depth~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("width_m","Width~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("v_ms","V~(m/s)",dfm$variable2,fixed=TRUE)#
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+#dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" at ","~at\n",dfm2$Name,fixed=TRUE)#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller = label_parsed)+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2#
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3
+head(dfm2$Name)
+usgs_geom_p1
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2#
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3#
+usgs_geom_p4<-ggplot(subset(dfm2,site=="p01186500"|site=="p01187300"|site=="p01187800"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p4#
+usgs_geom_p5<-ggplot(subset(dfm2,site=="p01188000"|site=="p01188090"|site=="p01189995"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p5#
+usgs_geom_p6<-ggplot(subset(dfm2,site=="p01193050"|site=="p01463500"|site=="p01479000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p6#
+usgs_geom_p7<-ggplot(subset(dfm2,site=="p01578310"|site=="p02226160"|site=="p02359170"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p7#
+usgs_geom_p8<-ggplot(subset(dfm2,site=="p02470500"|site=="p03303280"|site=="p03374100"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p8#
+usgs_geom_p9<-ggplot(subset(dfm2,site=="p03378500"|site=="p05420500"|site=="p05465500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p9#
+usgs_geom_p10<-ggplot(subset(dfm2,site=="p05490500"|site=="p05586100"|site=="p06610000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p10#
+usgs_geom_p11<-ggplot(subset(dfm2,site=="p06805500"|site=="p07374000"|site=="p07374525"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p11#
+usgs_geom_p12<-ggplot(subset(dfm2,site=="p07381590"|site=="p07381600"|site=="p08116650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p12#
+usgs_geom_p13<-ggplot(subset(dfm2,site=="p09522000"|site=="p11303500"|site=="p11447650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p13#
+usgs_geom_p14<-ggplot(subset(dfm2,site=="p01135300"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p14#
+plots.list = list(usgs_geom_p1,	usgs_geom_p2,	usgs_geom_p3,	usgs_geom_p4, usgs_geom_p5,	usgs_geom_p6,	usgs_geom_p7,	usgs_geom_p8, usgs_geom_p9,	usgs_geom_p10,	usgs_geom_p11,	usgs_geom_p12,	usgs_geom_p13,	usgs_geom_p14)  # Make a list of plots#
+#
+# Generate plots to be saved to pdf, warning the argument to marrangeGrob#
+# have to be passed using do.call#
+# nrow (ncol) gives the number of rows (columns) of plots per page#
+# nrow and ncol have to be specificed inside a list#
+# Here, we'll obtain 2 plots in rows by page#
+library(gridExtra)#
+plots<-marrangeGrob(grobs = plots.list, nrow=1, ncol=1)#
+#
+# To save to file, here on A4 paper#
+ggsave("~/multipage_plot.pdf", plots, width = 22, height = 20, units = "cm")
+dfm2[,c("site","Name")]
+dfm2$Name
+is.na(dfm2$Name)
+dfm2$Name[is.na(dfm2$Name)]
+dfm2$Name[is.na(dfm2$Name)]<-"Lower Atchafalaya R"
+library(reshape2)#
+dfm<-melt(df[,c("site","depth_m","width_m","v_ms","per")],id.vars=c("site","per"))#
+dfm$variable2<-dfm$variable#
+dfm$variable2<-gsub("depth_m","Depth~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("width_m","Width~(m)",dfm$variable2,fixed=TRUE)#
+dfm$variable2<-gsub("v_ms","V~(m/s)",dfm$variable2,fixed=TRUE)#
+sites$site<-sites$pid#
+dfm2<-merge(dfm,sites[,c("site","Name")],all.x=TRUE)#
+dfm2$Name<-gsub(".","",dfm2$Name,fixed=TRUE)#
+#dfm2$Name<-gsub(" ","~",dfm2$Name,fixed=TRUE)#
+dfm2$Name<-gsub(" at "," at\n",dfm2$Name,fixed=TRUE)#
+dfm2$Name[is.na(dfm2$Name)]<-"Lower Atchafalaya R"#
+#
+Lower Atchafalaya R#
+#
+theme_ts_space<-theme_grey() +#
+		theme(#
+#		panel.grid.major = element_blank(),#
+#		panel.grid.minor = element_blank(),#
+		panel.background = element_rect(fill="white", colour="black", size=2),#
+#		legend.key       = element_blank(),#
+#		legend.text      = element_text(size=20.5),#
+#		legend.text      = element_blank(),#
+#		legend.title     = element_text(size=20.5),#
+		axis.text.x = element_text(size=10,colour="black",hjust=1,angle=45),#
+		axis.text.y = element_text(size=10,colour="black",vjust=.3),#
+		axis.title.x = element_text(size=10),#
+		axis.title.y = element_text(size=10,vjust=-1),#
+		plot.title = element_text(hjust = 0.5,size=10,face="bold"),		#
+#		legend.position  = c(0.8,0.8)#
+		legend.position  = "none",#
+		panel.border = element_rect(colour = "black", fill=NA, size=2),#
+		plot.margin = unit(c(1,1,1,1), "cm")#
+		)#
+usgs_geom_p1<-ggplot(subset(dfm2,site=="p01133000"|site=="p01134500"|site=="p01135150"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p1#
+usgs_geom_p2<-ggplot(subset(dfm2,site=="p01135300"|site=="p01135500"|site=="p01151500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p2#
+usgs_geom_p3<-ggplot(subset(dfm2,site=="p01152500"|site=="p01177000"|site=="p01184000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p3#
+usgs_geom_p4<-ggplot(subset(dfm2,site=="p01186500"|site=="p01187300"|site=="p01187800"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p4#
+usgs_geom_p5<-ggplot(subset(dfm2,site=="p01188000"|site=="p01188090"|site=="p01189995"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p5#
+usgs_geom_p6<-ggplot(subset(dfm2,site=="p01193050"|site=="p01463500"|site=="p01479000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p6#
+usgs_geom_p7<-ggplot(subset(dfm2,site=="p01578310"|site=="p02226160"|site=="p02359170"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+usgs_geom_p7#
+usgs_geom_p8<-ggplot(subset(dfm2,site=="p02470500"|site=="p03303280"|site=="p03374100"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p8#
+usgs_geom_p9<-ggplot(subset(dfm2,site=="p03378500"|site=="p05420500"|site=="p05465500"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p9#
+usgs_geom_p10<-ggplot(subset(dfm2,site=="p05490500"|site=="p05586100"|site=="p06610000"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p10#
+usgs_geom_p11<-ggplot(subset(dfm2,site=="p06805500"|site=="p07374000"|site=="p07374525"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p11#
+usgs_geom_p12<-ggplot(subset(dfm2,site=="p07381590"|site=="p07381600"|site=="p08116650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p12#
+usgs_geom_p13<-ggplot(subset(dfm2,site=="p09522000"|site=="p11303500"|site=="p11447650"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p13#
+usgs_geom_p14<-ggplot(subset(dfm2,site=="p01135300"),aes(x=per,y=value))+#
+theme_ts_space+#
+geom_point(size=1)+#
+xlab("Flow Percentile")+#
+ylab("")+#
+facet_grid(variable2~Name,scales="free_y",labeller=labeller(f1.=label_parsed,.multi_line=T))+#
+theme(strip.text = element_text(size=10),#
+		strip.background = element_blank(),#
+		strip.placement = "left",#
+		strip.text.x = element_text(size = 12),#
+		plot.title = element_text(size=10,face="bold",hjust=0.5)#
+		)#
+#
+usgs_geom_p14#
+plots.list = list(usgs_geom_p1,	usgs_geom_p2,	usgs_geom_p3,	usgs_geom_p4, usgs_geom_p5,	usgs_geom_p6,	usgs_geom_p7,	usgs_geom_p8, usgs_geom_p9,	usgs_geom_p10,	usgs_geom_p11,	usgs_geom_p12,	usgs_geom_p13,	usgs_geom_p14)  # Make a list of plots#
+#
+# Generate plots to be saved to pdf, warning the argument to marrangeGrob#
+# have to be passed using do.call#
+# nrow (ncol) gives the number of rows (columns) of plots per page#
+# nrow and ncol have to be specificed inside a list#
+# Here, we'll obtain 2 plots in rows by page#
+library(gridExtra)#
+plots<-marrangeGrob(grobs = plots.list, nrow=1, ncol=1)#
+#
+# To save to file, here on A4 paper#
+ggsave("~/multipage_plot.pdf", plots, width = 22, height = 20, units = "cm")
+sr_samp_study_plot
+freshness_samp_study_plot
+suva254_samp_study_plot
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+sr_samp_study_plot<-ggplot(rtd_sr,aes(x=res_d,y=sratio,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+#geom_point(shape=21,size=1.3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE,size=1.3)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.40,1.48), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,2.0,0.2))+#
+ylab(expression(S[R]))+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+sr_samp_study_plot
+rtd_sr$Study
+rtd_fresh$Study
+unique(rtd_fresh$Study)
+unique(rtd_sr$Study)
+sr_samp_study_plot<-ggplot(rtd_sr,aes(x=res_d,y=sratio,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=1.3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE,size=1.3)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.40,1.48), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,2.0,0.2))+#
+ylab(expression(S[R]))+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+sr_samp_study_plot
+quartz()
+rtd_fresh<-rtd_fresh[order(rtd_fresh$Study,rtd_fresh$res_d),]#
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+group.colors
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+rtd_fresh<-rtd_fresh[order(rtd_fresh$Study,rtd_fresh$res_d),]#
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))
+freshness_samp_study_plot
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")#
+#scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")+#
+#scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+#sratio_lv_ord12_lmer <- lmer(log10(sratio) ~ log10(res_d) + LV_sum_all + (log10(res_d)|pid), rtd)#
+#rsquared(sratio_lv_ord12_lmer)#
+rtd_sr$pred_sr<-(predict(sratio_rt_lv2_int_lmer))#
+#
+sratio_rt_lv2_int_lmer_study <- lmer((sratio) ~ log10(res_d) + LV_sum2 + log10(res_d) * LV_sum2 + (1|Study), rtd_sr,REML=FALSE)#
+#
+rtd_sr$pred_sr_study<-(predict(sratio_rt_lv2_int_lmer_study))#
+#
+rtd_sr<-rtd_sr[order(rtd_sr$Study,rtd_sr$res_d),]#
+sr_samp_study_plot<-ggplot(rtd_sr,aes(x=res_d,y=sratio,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=1.3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE,size=1.3)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.40,1.48), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,2.0,0.2))+#
+ylab(expression(S[R]))+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+sr_samp_study_plot
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+#sratio_lv_ord12_lmer <- lmer(log10(sratio) ~ log10(res_d) + LV_sum_all + (log10(res_d)|pid), rtd)#
+#rsquared(sratio_lv_ord12_lmer)#
+rtd_sr$pred_sr<-(predict(sratio_rt_lv2_int_lmer))#
+#
+sratio_rt_lv2_int_lmer_study <- lmer((sratio) ~ log10(res_d) + LV_sum2 + log10(res_d) * LV_sum2 + (1|Study), rtd_sr,REML=FALSE)#
+#
+rtd_sr$pred_sr_study<-(predict(sratio_rt_lv2_int_lmer_study))#
+#
+rtd_sr<-rtd_sr[order(rtd_sr$Study,rtd_sr$res_d),]#
+sr_samp_study_plot<-ggplot(rtd_sr,aes(x=res_d,y=sratio,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="left")+#
+#geom_point(shape=21,size=1.3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE,size=1.3)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.40,1.48), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,2.0,0.2))+#
+ylab(expression(S[R]))+#
+xlab("Mean Travel Time (days)")+#
+#scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+sr_samp_study_plot
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+#
+suva254_rt_lv2_int_lmer2 <- lmer(log10(suva254) ~ log10(res_d) + LV_sum2 + log10(res_d) * LV_sum2 + (1|pid), rtd_suva254)#
+rsquared(suva254_rt_lv2_int_lmer2)#
+rtd_suva254$pred_suva254<-(predict(suva254_rt_lv2_int_lmer,))#
+#
+suva254_samp_study_plot<-ggplot(rtd_suva254,aes(x=res_d,y=suva254,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_line(aes(y=pred_suva254,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,7.1), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=c(1,2,3,4,5,6,7))+#
+ylab(expression(SUVA[254]))+#
+xlab("Mean Travel Time (days)")+#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+suva254_samp_study_plot
+hix_samp_study_plot<-ggplot(rtd_hix,aes(x=res_d,y=hix,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_line(aes(y=pred_hix,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(1,80), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_log10(breaks=c(1,10,40,80))+#
+ylab("Humification Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)+#
+#sf#
+hix_samp_study_plot
+hix_samp_study_plot<-ggplot(rtd_hix,aes(x=res_d,y=hix,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_line(aes(y=pred_hix,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(1,80), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_log10(breaks=c(1,10,40,80))+#
+ylab("Humification Index")+#
+xlab("Mean Travel Time (days)")#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+hix_samp_study_plot
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+#
+hix_rt_lv_int_lmer2 <- lmer(log10(hix) ~ log10(res_d) + LV_sum2 + log10(res_d) * LV_sum2 + (1|pid), rtd_hix)#
+rsquared(hix_rt_lv_int_lmer2)#
+rtd_hix$pred_hix<-10^(predict(hix_rt_lv_int_lmer))#
+#
+hix_samp_study_plot<-ggplot(rtd_hix,aes(x=res_d,y=hix,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_line(aes(y=pred_hix,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(1,80), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_log10(breaks=c(1,10,40,80))+#
+ylab("Humification Index")+#
+xlab("Mean Travel Time (days)")+#
+scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+hix_samp_study_plot
+rtd_fi_new$log10_res_d#
+fi_new_rt_lv2_int_lmer2 <- lmer((fi_new) ~ poly(log10_res_d,2) + LV_sum2 + poly(log10_res_d,2) * LV_sum2 + (1|Study), rtd_fi_new)#
+rsquared(fi_new_rt_lv2_int_lmer2)#
+rtd_fi_new$pred_fi_new<-(predict(fi_new_rt_lv2_int_lmer))#
+#
+fi_new_samp_study_plot<-ggplot(rtd_fi_new,aes(x=res_d,y=fi_new,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_line(aes(y=pred_fi_new,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(1.25,1.8), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(1.2,2,0.1))+#
+ylab("Fluorescence Index")+#
+xlab("Mean Travel Time (days)")+#
+scale_color_manual(values=group.colors)#
+#sf#
+fi_new_samp_study_plot
+grid_rt_study<-plot_grid(sr_samp_study_plot,freshness_samp_study_plot,suva254_samp_study_plot,hix_samp_study_plot,fi_new_samp_study_plot,align='hv',ncol=2)
+grid_rt_study
+library(cowplot)#
+library(ggplot2)#
+grid_rt_study<-plot_grid(sr_samp_study_plot,freshness_samp_study_plot,suva254_samp_study_plot,hix_samp_study_plot,fi_new_samp_study_plot,align='hv',ncol=2)
+grid_rt_study
+group.colors<-c(CZO="brown", Lu="orange", Maryland="darkblue", NWQN="darkgreen", PulseShunt="purple")#
+#sratio_lv_ord12_lmer <- lmer(log10(sratio) ~ log10(res_d) + LV_sum_all + (log10(res_d)|pid), rtd)#
+#rsquared(sratio_lv_ord12_lmer)#
+rtd_sr$pred_sr<-(predict(sratio_rt_lv2_int_lmer))#
+#
+sratio_rt_lv2_int_lmer_study <- lmer((sratio) ~ log10(res_d) + LV_sum2 + log10(res_d) * LV_sum2 + (1|Study), rtd_sr,REML=FALSE)#
+#
+rtd_sr$pred_sr_study<-(predict(sratio_rt_lv2_int_lmer_study))#
+#
+rtd_sr<-rtd_sr[order(rtd_sr$Study,rtd_sr$res_d),]#
+sr_samp_study_plot<-ggplot(rtd_sr,aes(x=res_d,y=sratio,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+#geom_point(shape=21,size=1.3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE,size=1.3)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.40,1.48), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,2.0,0.2))+#
+ylab(expression(S[R]))+#
+xlab("Mean Travel Time (days)")+#
+#scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+sr_samp_study_plot
+rtd_fresh<-rtd_fresh[order(rtd_fresh$Study,rtd_fresh$res_d),]#
+freshness_samp_study_plot<-ggplot(rtd_fresh,aes(x=res_d,y=freshness,fill=Study,group=Study))+#
+theme_ts_space+#
+#theme(legend.position="right")+#
+theme(legend.position="none")+#
+#geom_point(shape=21,size=3,color="black")+#
+geom_point(size=1.3,aes(color=Study))+#
+#geom_smooth(aes(color=Study),method="lm",se=FALSE)+#
+#geom_line(aes(y=pred_sr_study,group=Study),size=1.25)+#
+coord_cartesian(ylim = c(0.30,0.88), xlim =c(0.006,223))+#
+scale_x_log10(labels=fancy_scientific,breaks=c(0.0001,0.001,0.01,0.1,1,10,100,1000,10000))+#
+scale_y_continuous(breaks=seq(0.2,1.0,0.1))+#
+ylab("Freshness Index")+#
+xlab("Mean Travel Time (days)")+#
+#scale_fill_manual(values=group.colors)+#
+scale_color_manual(values=group.colors)#
+#sf#
+freshness_samp_study_plot
+grid_rt_study<-plot_grid(sr_samp_study_plot,freshness_samp_study_plot,suva254_samp_study_plot,hix_samp_study_plot,fi_new_samp_study_plot,align='hv',ncol=2)
+grid_rt_study
+library(cowplot)#
+library(ggplot2)#
+grid_rt_study<-plot_grid(sr_samp_study_plot,freshness_samp_study_plot,suva254_samp_study_plot,hix_samp_study_plot,fi_new_samp_study_plot,align='hv',ncol=2)#
+pdf("/Users/jhosen/gdrive/nasqan_data/grid_rt_study.pdf",height=15,width=11,useDingbats=FALSE)#
+grid_rt_study#
+dev.off()
+pdf("/Users/jhosen/gdrive/nasqan_data/grid_rt_study_leg.pdf",height=15,width=11,useDingbats=FALSE)#
+suva254_samp_study_plot+geom_point(shape=21,size=3,aes(fill=Study))+theme(legend.position="right")#
+dev.off()
+grid_rt_study<-plot_grid(sr_samp_study_plot,freshness_samp_study_plot,suva254_samp_study_plot,hix_samp_study_plot,fi_new_samp_study_plot,align='hv',ncol=2)#
+pdf("/Users/jhosen/gdrive/nasqan_data/grid_rt_study.pdf",height=10,width=7,useDingbats=FALSE)#
+grid_rt_study#
+dev.off()#
+pdf("/Users/jhosen/gdrive/nasqan_data/grid_rt_study_leg.pdf",height=10,width=7,useDingbats=FALSE)#
+suva254_samp_study_plot+geom_point(shape=21,size=3,aes(fill=Study))+theme(legend.position="right")#
+dev.off()
+study <- read_tsv("Study2911040", comment="##",#
+                  col_types = "Tnncc")#
+study <- as.data.frame(study)
+#---#
+#Adapted from "Exploring Movement Data in R" Workshop#
+#author: "Dana Seidel & Eric Dougherty"#
+#date: "January 4, 2018"#
+#edited: "Feb 18, 2020"#
+#---#
+#
+#Full workshop materials: https://github.com/dpseidel/MovEco-R-Workshop#
+#
+#install.packages("tidyverse")#
+#install.packages("sf")#
+#install.packages("mapview")#
+#install.packages("move")#
+#install.packages("adehabitatLT")#
+library(tidyverse)#
+library(sf)#
+library(mapview)#
+library(move)#
+library(adehabitatLT)#
+#
+#go to movebank.org and create a username and password.#
+loginStored <- movebankLogin(username="youruseridhere", password="yourpasswordhere")#
+#
+#search for studies - #
+searchMovebankStudies(x="albatross", login=loginStored)#
+#get study ID - #
+getMovebankStudy(2911040, login=loginStored)$citation#
+#
+#check for animal IDs - #
+getMovebankAnimals(2911040, login=loginStored)#
+#get the all data - getMovebankData()#
+#get only specific animal by specifying individual_id#
+#
+albatross <- getMovebank("event", study_id = 2911040, login=loginStored)#
+#
+write_tsv(albatross, "Study2911040")#
+# getMovebank("event", login, study_id,...): returns the sensor measurements from a study. #
+# See also getMovebankData, getMovebankNonLocationData.
+loginStored <- movebankLogin(username="jhosen", password="thisismypassword!1")
+#search for studies - #
+searchMovebankStudies(x="albatross", login=loginStored)#
+#get study ID - #
+getMovebankStudy(2911040, login=loginStored)$citation#
+#
+#check for animal IDs - #
+getMovebankAnimals(2911040, login=loginStored)#
+#get the all data - getMovebankData()#
+#get only specific animal by specifying individual_id#
+#
+albatross <- getMovebank("event", study_id = 2911040, login=loginStored)#
+#
+write_tsv(albatross, "Study2911040")#
+# getMovebank("event", login, study_id,...): returns the sensor measurements from a study. #
+# See also getMovebankData, getMovebankNonLocationData.#
+study <- read_tsv("Study2911040", comment="##",#
+                  col_types = "Tnncc")
+head(study)
+head(albatross)
+study <- as.data.frame(study)#
+#
+albatross <- move(x=study$location_long,#
+                  y=study$location_lat,#
+                  time=study$timestamp,#
+                  data=study,#
+                  animal = as.factor(study$individual_id),#
+                  sensor = as.factor(study$tag_id),#
+                  proj=CRS("+proj=longlat"))
+albatross <- getMovebank("event", study_id = 2911040, login=loginStored)
+albatross <- move(x=albatross$location_long,#
+                  y=albatross$location_lat,#
+                  time=albatross$timestamp,#
+                  data=albatross,#
+                  animal = as.factor(albatross$individual_id),#
+                  sensor = as.factor(albatross$tag_id),#
+                  proj=CRS("+proj=longlat"))
+?move
+albatross <- getMovebank("event", study_id = 2911040, login=loginStored)
+plot(albatross, type="l") # all of them
+study <- read_tsv("Study2911040", comment="##",#
+                  col_types = "Tnncc")
+study
+str(albatross)
+str(study)
+study <- as.data.frame(study)
+str(study)
+albatross$tag_id
+albatross$individual_id
+citation("nhdplusTools")
+library()
+setwd('/Users/jhosen/Ecological_Sensors')
+library(knitr)
+knit('/Users/jhosen/Ecological_Sensors/index.Rmd')
+?knit
+?knit
+?knit
+knit('/Users/jhosen/Ecological_Sensors/index.Rhtml')
+?knit
+knit('/Users/jhosen/Ecological_Sensors/index.Rhtml')
+?knit
+?icon

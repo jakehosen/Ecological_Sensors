@@ -1,0 +1,32 @@
+name: "Ecological Sensors Course"                                # CHANGE HERE 
+output_dir: "."
+navbar:
+  title: "Sensors"                             # CHANGE HERE 
+  type: inverse
+  left:
+    - text: "Home"
+      icon: fa-home
+      href: index.html
+    - text: "Sensor Setup"
+      icon: fa-wrench
+      href: sensorsetup.html
+    - text: "Tests"
+      icon: fa-battery-three-quarters
+      href: batteries.html
+    - text: "Thingspace"
+      icon: fa-columns
+      href: https://thingspeak.com/channels/1030130
+    - text: "Brightspace"
+      icon: fa-sun
+      href: https://purdue.brightspace.com/d2l/home/8229
+  right:
+    - text: "Email Prof!"
+      icon: fa-envelope-o
+      href: mailto:jhosen@purdue.edu                    # CHANGE HERE 
+    - text: "GitHub"
+      icon: fa-github
+      href: https://github.com/jakehosen/EcologicalSensorsClass       # CHANGE HERE 
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
