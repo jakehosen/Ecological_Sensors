@@ -13,7 +13,7 @@ navbar:
     - text: "Tests"
       icon: fa-battery-three-quarters
       href: battery.html
-    - text: "Thingspace"
+    - text: "Thingspeak"
       icon: fa-columns
       href: https://thingspeak.com/channels/1030130
     - text: "Brightspace"
