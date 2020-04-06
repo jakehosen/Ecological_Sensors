@@ -379,9 +379,11 @@ $(document).ready(function () {
 #include &quot;SeeedOLED.h&quot;
 #include &quot;JsonParserGeneratorRK.h&quot;
 
+#include &quot;cayenne-particle/cayenne-particle.h&quot;
 
+#define CAYENNE_PRINT serial
 #define DUST_SENSOR_PIN D4
-#define SENSOR_READING_INTERVAL 30000
+#define SENSOR_READING_INTERVAL 900000
 #define AQS_PIN A2
 
 AirQualitySensor aqSensor(AQS_PIN);
@@ -396,12 +398,31 @@ unsigned long duration;
 float ratio = 0;
 float concentration = 0;
 
+const char * eventName =            &quot;env-vals&quot;;    
+const char * myWriteAPIKey = &quot;ELEH3K8AQ2RNZ9AK&quot;;
+
+
+
+
+float field1;  // initialized as 1.1 for demo only
+float field2;  // initialized as 2.2 for demo only
+float field3;
+float field4;
+float field5;
+float field6;
+float field7;
+float field8;
+char msg[256];       // Character array for the snprintf Publish Payload
+
+
+
 
 
 // setup() runs once, when the device is first turned on.
 void setup() {
    Serial.begin(9600);
-   
+   delay(5000);
+   pinMode(BATT, INPUT);
    //Initialize OLED Screen
    Wire.begin();
    SeeedOled.init();
@@ -457,105 +478,56 @@ void loop() {
 int temp, pressure, humidity;   
 duration = pulseIn(DUST_SENSOR_PIN, LOW);
 lowpulseoccupancy = lowpulseoccupancy + duration;
-
+ratio = lowpulseoccupancy / (SENSOR_READING_INTERVAL * 10.0);
 if ((millis() - lastInterval) &gt; SENSOR_READING_INTERVAL)
 {
-   getDustSensorReadings();
-
-   lowpulseoccupancy = 0;
+   
    lastInterval = millis();
 
-
+   float voltage = analogRead(BATT) * 0.0011224;
    //This is the air quality code
-   String quality = getAirQuality();
-   Serial.printlnf(&quot;Air Quality: %s&quot;, quality.c_str());
-
-   getBMEValues(temp, pressure, humidity);
+  
+    temp = (float)bme.readTemperature();
+    pressure = (float)(bme.readPressure() / 100.0F);
+    humidity = (float)bme.readHumidity();
+   //getBMEValues(temp, pressure, humidity);
    Serial.printlnf(&quot;Temp: %d&quot;, temp);
    Serial.printlnf(&quot;Pressure: %d&quot;, pressure);
    Serial.printlnf(&quot;Humidity: %d&quot;, humidity);
-   updateDisplay(temp, humidity, pressure, quality);
-   createEventPayload(temp, humidity, pressure, quality);
-}
+   updateDisplay(temp, humidity, pressure, ratio);
+   //createEventPayload(temp, humidity, pressure, quality);
+    field1 = temp;
+    field2 = pressure;
+    field3 = humidity;
+    field4 = voltage;
+    field5 = aqSensor.slope();
+    field6 = aqSensor.getValue();
+      if (lowpulseoccupancy &gt; 0)
+  {
+    field7 = lowpulseoccupancy;
+    field8 = ratio;
+  }
+    lowpulseoccupancy = 0;
+    snprintf(msg, sizeof(msg),&quot;{\&quot;1\&quot;:\&quot;%.2f\&quot;, \&quot;2\&quot;:\&quot;%.1f\&quot;, \&quot;3\&quot;:\&quot;%.2f\&quot;, \&quot;4\&quot;:\&quot;%.2f\&quot;, \&quot;5\&quot;:\&quot;%.3f\&quot;, \&quot;6\&quot;:\&quot;%.2f\&quot;, \&quot;7\&quot;:\&quot;%.1f\&quot;, \&quot;8\&quot;:\&quot;%.4f\&quot;, \&quot;k\&quot;:\&quot;%s\&quot;}&quot;, field1, field2, field3, field4, field5, field6, field7, field8, myWriteAPIKey);
+    Particle.publish(eventName, msg, PRIVATE, NO_ACK);
 
 }
-
-
-
-
-
-
-// This function gets readings from the dust sensor.
-void getDustSensorReadings()
-{
-if (lowpulseoccupancy == 0)
-{
- lowpulseoccupancy = last_lpo;
-}
-else
-{
- last_lpo = lowpulseoccupancy;
-}
-
-ratio = lowpulseoccupancy / (SENSOR_READING_INTERVAL * 10.0);
-concentration = 1.1 * pow(ratio, 3) - 3.8 * pow(ratio, 2) + 520 * ratio + 0.62;
-
-Serial.printlnf(&quot;LPO: %d&quot;, lowpulseoccupancy);
-Serial.printlnf(&quot;Ratio: %f%%&quot;, ratio);
-Serial.printlnf(&quot;Concentration: %f pcs/L&quot;, concentration);
-
 
 }
 
 
 
 
-
-//This is a function to run the air quality sensor.
-String getAirQuality()
-{
- int quality = aqSensor.slope();
- String qual = &quot;None&quot;;
-
- if (quality == AirQualitySensor::FORCE_SIGNAL)
- {
-   qual = &quot;Danger&quot;;
- }
- else if (quality == AirQualitySensor::HIGH_POLLUTION)
- {
-   qual = &quot;High Pollution&quot;;
- }
- else if (quality == AirQualitySensor::LOW_POLLUTION)
- {
-   qual = &quot;Low Pollution&quot;;
- }
- else if (quality == AirQualitySensor::FRESH_AIR)
- {
-   qual = &quot;Fresh Air&quot;;
- }
-
- return qual;
-}
-
-//function to weather data from BME sensor
-int getBMEValues(int &amp;temp, int &amp;pressure, int &amp;humidity)
-{
- temp = (int)bme.readTemperature();
- pressure = (int)(bme.readPressure() / 100.0F);
- humidity = (int)bme.readHumidity();
-
- return 1;
-}
 
 
 
 //function to run OLED display.
-void updateDisplay(int temp, int humidity, int pressure, String airQuality)
+void updateDisplay(float temp, float humidity, float pressure, long ratio)
 {
  SeeedOled.clearDisplay();
 
  SeeedOled.setTextXY(0, 3);
- SeeedOled.putString(airQuality);
+ SeeedOled.putNumber(ratio);
 
  SeeedOled.setTextXY(2, 0);
  SeeedOled.putString(&quot;Temp: &quot;);
@@ -579,30 +551,25 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality)
    SeeedOled.putNumber(concentration); // Cast our float to an int to make it more compact
    SeeedOled.putString(&quot; pcs/L&quot;);
  }
-}
-
-
-//function for JSON payload.
-void createEventPayload(int temp, int humidity, int pressure, String airQuality)
-{
-  JsonWriterStatic&lt;256&gt; jw;
-  {
-  JsonWriterAutoObject obj(&amp;jw);
-
-  jw.insertKeyValue(&quot;temp&quot;, temp);
-  jw.insertKeyValue(&quot;humidity&quot;, humidity);
-  jw.insertKeyValue(&quot;pressure&quot;, pressure);
-  jw.insertKeyValue(&quot;air-quality&quot;, airQuality);
-
-  if (lowpulseoccupancy &gt; 0)
-  {
-   jw.insertKeyValue(&quot;dust-lpo&quot;, lowpulseoccupancy);
-   jw.insertKeyValue(&quot;dust-ratio&quot;, ratio);
-   jw.insertKeyValue(&quot;dust-concentration&quot;, concentration);
-  }
-  Particle.publish(&quot;env-vals&quot;, jw.getBuffer(), PRIVATE);
-}
 }</code></pre>
+<p> </p>
+</div>
+<div id="configuring-a-webhook." class="section level2">
+<h2>Configuring a webhook.</h2>
+<p>Now that your data are being streamed to the Particle’s servers on the web, we need to tell the servers where we’re going to store the data. We do this with a webhook that essentially reroutes our data.</p>
+<p>To setup a webhook, go to <a href="http://console.particle.io">console.particle.io</a> and login with the account you’ve created. On the left side of the webpage are a bunch of icons that have labels that pop up when you hover the mouse over them. Click on the one that says “integrations”. When you do that you will see a page like the one below. Click on the box with the (+) labeled “New Integration”:</p>
+<div class="figure">
+<img src="new_integration.png" alt="The Particle Console screen for setting up new web integrations (e.g., webhooks)" />
+<p class="caption">The Particle Console screen for setting up new web integrations (e.g., webhooks)</p>
+</div>
+<p>From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below). <img src="add_webhook.png" alt="Page for selecting the type of integration being used (here we are using a webhook)" /> Once you have clicked this button, you will see a webform like the one below. We will enter information about the Thingspeak server that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the data dashboards we have setup on thingspeak.com. <img src="webhook_blank.png" alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
+<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="https://api.thingspeak.com/update" class="uri">https://api.thingspeak.com/update</a>”, the request type should be set to “POST”, the request format should be set to “Web Form” and the device can be set to “Any” since we only have one device associated with our accounts. When you are done your form should look like the one below. <img src="webhook_thingspeak.png" alt="Configuring a webhook for Thingspeak" /></p>
+<p>When you have entered that information click the link at the bottom of the page that says “Advanced Settings” that will reveal an additional menu at the bottom of the page. You want to add the rows just like you see in this image. The only exception is that you want to use the api_key I gave you rather than the api_key that is in the image below.</p>
+<div class="figure">
+<img src="webhook_thingspeak_advanced.png" alt="Configuring a advanced settings for the webhook for Thingspeak" />
+<p class="caption">Configuring a advanced settings for the webhook for Thingspeak</p>
+</div>
+<p>Once you are done your device should start automatically sending data to your thingspeak dashboard. Your thingspeak dashboard’s website is linked to your channel ID. The channel ID for my dashboard is 1030130 so my dashboard is located at <a href="https://thingspeak.com/channels/1030130">https://thingspeak.com/channels/1030130</a>.</p>
 </div>
 
 

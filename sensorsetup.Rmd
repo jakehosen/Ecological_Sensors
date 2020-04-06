@@ -228,6 +228,10 @@ void updateDisplay(float temp, float humidity, float pressure, long ratio)
 }
 ```
 
+
+&nbsp;  
+
+
 ## Configuring a webhook.
 Now that your data are being streamed to the Particle's servers on the web, we need to tell the servers where we're going to store the data. We do this with a webhook that essentially reroutes our data.
 
