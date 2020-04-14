@@ -1,0 +1,221 @@
+---
+title: "Configuring Particle Argon to Talk to Thingspeak"
+author: "Jake Hosen"
+output: html_document
+---
+
+
+**Past this code into the .ino file in VS Code to properly configure your Argon to talk to the Thingspeak server:**
+```{c eval=FALSE}
+/*
+ * Project Argon_Tutorial
+ * Description:
+ * Author:
+ * Date:
+ */
+
+
+#include "Air_Quality_Sensor.h"
+#include "Adafruit_BME280.h"
+#include "Adafruit_Sensor.h"
+#include "SeeedOLED.h"
+#include "JsonParserGeneratorRK.h"
+
+
+#define CAYENNE_PRINT serial
+#define DUST_SENSOR_PIN D4
+#define SENSOR_READING_INTERVAL 900000
+#define AQS_PIN A2
+
+AirQualitySensor aqSensor(AQS_PIN);
+Adafruit_BME280 bme;
+
+
+unsigned long lastInterval;
+unsigned long lowpulseoccupancy = 0;
+unsigned long last_lpo = 0;
+unsigned long duration;
+
+float ratio = 0;
+float concentration = 0;
+
+const char * eventName =            "env-vals";    
+const char * myWriteAPIKey = "ELEH3K8AQ2RNZ9AK";
+
+
+
+
+float field1;  // initialized as 1.1 for demo only
+float field2;  // initialized as 2.2 for demo only
+float field3;
+float field4;
+float field5;
+float field6;
+float field7;
+float field8;
+char msg[256];       // Character array for the snprintf Publish Payload
+
+
+
+
+
+// setup() runs once, when the device is first turned on.
+void setup() {
+   Serial.begin(9600);
+   delay(5000);
+   pinMode(BATT, INPUT);
+   //Initialize OLED Screen
+   Wire.begin();
+   SeeedOled.init();
+
+   SeeedOled.clearDisplay();
+   SeeedOled.setNormalDisplay();
+   SeeedOled.setPageMode();
+
+   //OLED Startup Message
+   SeeedOled.setTextXY(2, 0);
+   SeeedOled.putString("Ready");
+   SeeedOled.setTextXY(3, 0);
+   SeeedOled.putString("to");
+   SeeedOled.setTextXY(4, 0);
+   SeeedOled.putString("Rock and Roll");
+
+   pinMode(DUST_SENSOR_PIN, INPUT);
+   lastInterval = millis();
+
+
+   //checking to see if the air quality sensor is ready.
+   if (aqSensor.init())
+   {
+      Serial.println("Air Quality Sensor ready.");
+    }
+   else
+   {
+      Serial.println("Air Quality Sensor ERROR!");
+   }
+
+
+   //checking to see if the BME sensor is ready.
+   if (bme.begin())
+   {
+      Serial.println("BME280 Sensor ready.");
+   }
+   else
+   {
+      Serial.println("BME280 Sensor ERROR!");
+   }
+
+
+
+}
+
+
+
+
+
+
+// loop() runs over and over again, as quickly as it can execute.
+void loop() {
+int temp, pressure, humidity;   
+duration = pulseIn(DUST_SENSOR_PIN, LOW);
+lowpulseoccupancy = lowpulseoccupancy + duration;
+ratio = lowpulseoccupancy / (SENSOR_READING_INTERVAL * 10.0);
+if ((millis() - lastInterval) > SENSOR_READING_INTERVAL)
+{
+   
+   lastInterval = millis();
+
+   float voltage = analogRead(BATT) * 0.0011224;
+   //This is the air quality code
+  
+    temp = (float)bme.readTemperature();
+    pressure = (float)(bme.readPressure() / 100.0F);
+    humidity = (float)bme.readHumidity();
+   //getBMEValues(temp, pressure, humidity);
+   Serial.printlnf("Temp: %d", temp);
+   Serial.printlnf("Pressure: %d", pressure);
+   Serial.printlnf("Humidity: %d", humidity);
+   updateDisplay(temp, humidity, pressure, ratio);
+   //createEventPayload(temp, humidity, pressure, quality);
+    field1 = temp;
+    field2 = pressure;
+    field3 = humidity;
+    field4 = voltage;
+    field5 = aqSensor.slope();
+    field6 = aqSensor.getValue();
+      if (lowpulseoccupancy > 0)
+  {
+    field7 = lowpulseoccupancy;
+    field8 = ratio;
+  }
+    lowpulseoccupancy = 0;
+    snprintf(msg, sizeof(msg),"{\"1\":\"%.2f\", \"2\":\"%.1f\", \"3\":\"%.2f\", \"4\":\"%.2f\", \"5\":\"%.3f\", \"6\":\"%.2f\", \"7\":\"%.1f\", \"8\":\"%.4f\", \"k\":\"%s\"}", field1, field2, field3, field4, field5, field6, field7, field8, myWriteAPIKey);
+    Particle.publish(eventName, msg, PRIVATE, NO_ACK);
+
+}
+
+}
+
+
+
+
+
+
+
+//function to run OLED display.
+void updateDisplay(float temp, float humidity, float pressure, long ratio)
+{
+ SeeedOled.clearDisplay();
+
+ SeeedOled.setTextXY(0, 3);
+ SeeedOled.putNumber(ratio);
+
+ SeeedOled.setTextXY(2, 0);
+ SeeedOled.putString("Temp: ");
+ SeeedOled.putNumber(temp);
+ SeeedOled.putString("C");
+
+ SeeedOled.setTextXY(3, 0);
+ SeeedOled.putString("Humidity: ");
+ SeeedOled.putNumber(humidity);
+ SeeedOled.putString("%");
+
+ SeeedOled.setTextXY(4, 0);
+ SeeedOled.putString("Press: ");
+ SeeedOled.putNumber(pressure);
+ SeeedOled.putString(" hPa");
+
+ if (concentration > 1)
+ {
+   SeeedOled.setTextXY(5, 0);
+   SeeedOled.putString("Dust: ");
+   SeeedOled.putNumber(concentration); // Cast our float to an int to make it more compact
+   SeeedOled.putString(" pcs/L");
+ }
+}
+```
+
+
+&nbsp;  
+
+
+## Configuring a webhook.
+Now that your data are being streamed to the Particle's servers on the web, we need to tell the servers where we're going to store the data. We do this with a webhook that essentially reroutes our data.
+
+To setup a webhook, go to [console.particle.io](http://console.particle.io) and login with the account you've created. On the left side of the webpage are a bunch of icons that have labels that pop up when you hover the mouse over them. Click on the one that says "integrations". When you do that you will see a page like the one below. Click on the box with the (+) labeled "New Integration":
+
+![The Particle Console screen for setting up new web integrations (e.g., webhooks)](new_integration.png)
+
+From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below).
+![Page for selecting the type of integration being used (here we are using a webhook)](add_webhook.png)
+Once you have clicked this button, you will see a webform like the one below. We will enter information about the Thingspeak server that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the data dashboards we have setup on thingspeak.com.
+![Here's what the webhook setup form looks like when it's blank](webhook_blank.png)
+
+You should fill out the form like you see below. The event name should be "env-vals", the url should be "https://api.thingspeak.com/update", the request type should be set to "POST", the request format should be set to "Web Form" and the device can be set to "Any" since we only have one device associated with our accounts. When you are done your form should look like the one below.
+![Configuring a webhook for Thingspeak](webhook_thingspeak.png)
+
+When you have entered that information click the link at the bottom of the page that says "Advanced Settings" that will reveal an additional menu at the bottom of the page. You want to add the rows just like you see in this image. The only exception is that you want to use the api_key I gave you rather than the api_key that is in the image below.
+
+![Configuring a advanced settings for the webhook for Thingspeak](webhook_thingspeak_advanced.png)
+
+Once you are done your device should start automatically sending data to your thingspeak dashboard. Your thingspeak dashboard's website is linked to your channel ID. The channel ID for my dashboard is 1030130 so my dashboard is located at [https://thingspeak.com/channels/1030130](https://thingspeak.com/channels/1030130).
