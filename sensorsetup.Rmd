@@ -53,7 +53,6 @@ That's totally fine. I've included a working version of the code below. Watch th
 #include "SeeedOLED.h"
 #include "JsonParserGeneratorRK.h"
 
-#include "cayenne-particle/cayenne-particle.h"
 
 #define CAYENNE_PRINT serial
 #define DUST_SENSOR_PIN D4
