@@ -8,6 +8,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r, echo = FALSE}
+library(rmdexamples)
+kmeans_cluster(iris)
+```
+
+
 ## Testing battery life and the impact of VOCs from tape on the air quality sensor.
 When we met in class, wanted to know how long the battery life was on these sensors. I started by logging data and sending it to the web at 10 second intervals. Logging this way gave us about 12 hours of battery life. Currently I'm logging at 15 minute intervals and will update the page when I'm done with that experiment.
 
