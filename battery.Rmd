@@ -8,10 +8,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, echo = FALSE}
-library(rmdexamples)
-kmeans_cluster(iris)
-```
+
 
 
 ## Testing battery life and the impact of VOCs from tape on the air quality sensor.

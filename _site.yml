@@ -13,9 +13,9 @@ navbar:
     - text: "Tests"
       icon: fa-battery-three-quarters
       href: battery.html
-    - text: "Thingspeak"
+    - text: "DataDash"
       icon: fa-columns
-      href: https://thingspeak.com/channels/1030130
+      href: http://ecosystemscience.io:3838/Data_Dashboard/
     - text: "Brightspace"
       icon: fa-sun
       href: https://purdue.brightspace.com/d2l/home/8229
