@@ -303,7 +303,7 @@ $(document).ready(function () {
   </a>
 </li>
 <li>
-  <a href="https://purdue.brightspace.com/d2l/home/8229">
+  <a href="https://purdue.brightspace.com/d2l/home/213362">
     <span class="fa fa-sun"></span>
      
     Brightspace
@@ -319,10 +319,10 @@ $(document).ready(function () {
   </a>
 </li>
 <li>
-  <a href="https://github.com/jakehosen/EcologicalSensorsClass">
+  <a href="https://github.com/jakehosen/argon_aq">
     <span class="fa fa-github"></span>
      
-    GitHub
+    Project GitHub Repo
   </a>
 </li>
       </ul>
@@ -631,8 +631,8 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
 <img src="new_integration.png" alt="The Particle Console screen for setting up new web integrations (e.g., webhooks)" />
 <p class="caption">The Particle Console screen for setting up new web integrations (e.g., webhooks)</p>
 </div>
-<p>From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below). <img src="add_webhook.png" alt="Page for selecting the type of integration being used (here we are using a webhook)" /> Once you have clicked this button, you will see a webform like the one below. We will enter information about the Thingspeak server that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the data dashboards we have setup on thingspeak.com. <img src="webhook_blank.png" alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
-<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="https://api.thingspeak.com/update" class="uri">https://api.thingspeak.com/update</a>”, the request type should be set to “POST”, the request format should be set to “Web Form” and the device can be set to “Any” since we only have one device associated with our accounts. When you are done your form should look like the one below. <img src="webhook_geoedf_url.png" alt="Configuring a webhook for GeoEDF" /></p>
+<p>From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below). <img src="add_webhook.png" alt="Page for selecting the type of integration being used (here we are using a webhook)" /> Once you have clicked this button, you will see a webform like the one below. We will enter information about the GeoEDF server at MyGeoHub that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the database hosted at <a href="http://mygeohub.org">mygeohub.org</a>. <img src="webhook_blank.png" alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
+<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="http://149.165.157.11:4792/airqualitysensordb/data" class="uri">http://149.165.157.11:4792/airqualitysensordb/data</a>”, the request type should be set to “POST”, the request format should be set to “JSON” and the device can be set to “Any” since we have a device ID parameter in the JSON object to keep track of each device. When you are done your form should look like the one below. <img src="webhook_geoedf_url.png" alt="Configuring a webhook for GeoEDF" /></p>
 <p>Now, click on <em>Advanced Settings</em>. Click the radio button under JSON that says “Custom” and then paste the following code into the resulting textbox. When you’re done your page should look like the picture below.</p>
 <pre class="c"><code></code></pre>
 <div class="figure">
