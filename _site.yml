@@ -18,14 +18,14 @@ navbar:
       href: http://ecosystemscience.io:3838/Data_Dashboard/
     - text: "Brightspace"
       icon: fa-sun
-      href: https://purdue.brightspace.com/d2l/home/8229
+      href: https://purdue.brightspace.com/d2l/home/213362
   right:
     - text: "Email Prof!"
       icon: fa-envelope-o
       href: mailto:jhosen@purdue.edu                    # CHANGE HERE 
-    - text: "GitHub"
+    - text: "Project GitHub Repo"
       icon: fa-github
-      href: https://github.com/jakehosen/EcologicalSensorsClass       # CHANGE HERE 
+      href: https://github.com/jakehosen/argon_aq       # CHANGE HERE 
 output:
   html_document:
     theme: cosmo

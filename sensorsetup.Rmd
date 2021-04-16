@@ -40,28 +40,26 @@ That's totally fine. I've included a working version of the code below. Watch th
 **Here's the code that you past into VS Code following the instructions in the video:**
 ```{c eval=FALSE}
 /*
- * Project Argon_Tutorial
- * Description:
- * Author:
- * Date:
+ * Air Quality Kit for FNR498
+ * Setup sensor and connect to MyGeoHub
+ * 
+ * 
  */
+#include "Particle.h"
 
+SYSTEM_THREAD(ENABLED);
 
 #include "Air_Quality_Sensor.h"
 #include "Adafruit_BME280.h"
-#include "Adafruit_Sensor.h"
 #include "SeeedOLED.h"
 #include "JsonParserGeneratorRK.h"
 
-
-#define CAYENNE_PRINT serial
-#define DUST_SENSOR_PIN D4
-#define SENSOR_READING_INTERVAL 15000
 #define AQS_PIN A2
+#define DUST_SENSOR_PIN D4
+#define SENSOR_READING_INTERVAL 900000
 
 AirQualitySensor aqSensor(AQS_PIN);
 Adafruit_BME280 bme;
-
 
 unsigned long lastInterval;
 unsigned long lowpulseoccupancy = 0;
@@ -71,14 +69,14 @@ unsigned long duration;
 float ratio = 0;
 float concentration = 0;
 
+//Keep eventName the same, this helps the webhook forward your data.
+//Change MySiteID to name your device.
 const char * eventName =            "env-vals";    
-const char * myWriteAPIKey = "ELEH3K8AQ2RNZ9AK";
+const char * MySiteID = "South Oaklan Lafayette IN";
 
 
-
-
-float field1;  // initialized as 1.1 for demo only
-float field2;  // initialized as 2.2 for demo only
+float field1;  
+float field2;  
 float field3;
 float field4;
 float field5;
@@ -89,141 +87,222 @@ char msg[256];       // Character array for the snprintf Publish Payload
 
 
 
+int getBMEValues(int &temp, int &humidity, int &pressure);
+void getDustSensorReadings();
+String getAirQuality();
+void createEventPayload(int temp, int humidity, int pressure, String airQuality);
+void updateDisplay(int temp, int humidity, int pressure, String airQuality);
 
+void setup()
+{
+  Serial.begin(9600);
+  delay(50);
 
-// setup() runs once, when the device is first turned on.
-void setup() {
-   Serial.begin(9600);
-   delay(5000);
-   pinMode(BATT, INPUT);
-   //Initialize OLED Screen
-   Wire.begin();
-   SeeedOled.init();
+  // Configure the dust sensor pin as an input
+  pinMode(DUST_SENSOR_PIN, INPUT);
 
-   SeeedOled.clearDisplay();
-   SeeedOled.setNormalDisplay();
-   SeeedOled.setPageMode();
+  if (aqSensor.init())
+  {
+    Serial.println("Air Quality Sensor ready.");
+  }
+  else
+  {
+    Serial.println("Air Quality Sensor ERROR!");
+  }
 
-   //OLED Startup Message
-   SeeedOled.setTextXY(2, 0);
-   SeeedOled.putString("Ready");
-   SeeedOled.setTextXY(3, 0);
-   SeeedOled.putString("to");
-   SeeedOled.setTextXY(4, 0);
-   SeeedOled.putString("Rock and Roll");
+  Wire.begin();
+  SeeedOled.init();
 
-   pinMode(DUST_SENSOR_PIN, INPUT);
-   lastInterval = millis();
+  SeeedOled.clearDisplay();
+  SeeedOled.setNormalDisplay();
+  SeeedOled.setPageMode();
 
+  SeeedOled.setTextXY(2, 0);
+  SeeedOled.putString("FNR498");
+  SeeedOled.setTextXY(3, 0);
+  SeeedOled.putString("Sensors");
+  SeeedOled.setTextXY(4, 0);
+  SeeedOled.putString("Initializing");
 
-   //checking to see if the air quality sensor is ready.
-   if (aqSensor.init())
-   {
-      Serial.println("Air Quality Sensor ready.");
-    }
-   else
-   {
-      Serial.println("Air Quality Sensor ERROR!");
-   }
+  if (bme.begin())
+  {
+    Serial.println("BME280 Sensor ready.");
+  }
+  else
+  {
+    Serial.println("BME280 Sensor ERROR!");
+  }
 
+delay(5000);
 
-   //checking to see if the BME sensor is ready.
-   if (bme.begin())
-   {
-      Serial.println("BME280 Sensor ready.");
-   }
-   else
-   {
-      Serial.println("BME280 Sensor ERROR!");
-   }
+  SeeedOled.setTextXY(5, 0);
+  SeeedOled.putString("Warm-Up");
+  
 
-
-
+  lastInterval = millis();
 }
 
 
 
 
-
-
-// loop() runs over and over again, as quickly as it can execute.
-void loop() {
-int temp, pressure, humidity;   
-duration = pulseIn(DUST_SENSOR_PIN, LOW);
-lowpulseoccupancy = lowpulseoccupancy + duration;
-ratio = lowpulseoccupancy / (SENSOR_READING_INTERVAL * 10.0);
-if ((millis() - lastInterval) > SENSOR_READING_INTERVAL)
+void loop()
 {
-   
-   lastInterval = millis();
+  int temp, pressure, humidity;
 
-   float voltage = analogRead(BATT) * 0.0011224;
-   //This is the air quality code
-  
-    temp = (float)bme.readTemperature();
-    pressure = (float)(bme.readPressure() / 100.0F);
-    humidity = (float)bme.readHumidity();
-   //getBMEValues(temp, pressure, humidity);
-   Serial.printlnf("Temp: %d", temp);
-   Serial.printlnf("Pressure: %d", pressure);
-   Serial.printlnf("Humidity: %d", humidity);
-   updateDisplay(temp, humidity, pressure, ratio);
-   //createEventPayload(temp, humidity, pressure, quality);
+  duration = pulseIn(DUST_SENSOR_PIN, LOW);
+  lowpulseoccupancy = lowpulseoccupancy + duration;
+
+  if ((millis() - lastInterval) > SENSOR_READING_INTERVAL)
+  {
+    String quality = getAirQuality();
+    int qual_int = getAirQualityNum();
+    Serial.printlnf("Air Quality: %s", quality.c_str());
+
+    getBMEValues(temp, pressure, humidity);
+    Serial.printlnf("Temp: %d", temp);
+    Serial.printlnf("Pressure: %d", pressure);
+    Serial.printlnf("Humidity: %d", humidity);
+
+    getDustSensorReadings();
+
+    updateDisplay(temp, humidity, pressure, quality, qual_int);
+
+
     field1 = temp;
     field2 = pressure;
     field3 = humidity;
-    field4 = voltage;
-    field5 = aqSensor.slope();
-    field6 = aqSensor.getValue();
+    field4 = aqSensor.slope();
+    field5 = aqSensor.getValue();
       if (lowpulseoccupancy > 0)
   {
-    field7 = lowpulseoccupancy;
-    field8 = ratio;
+    field6 = lowpulseoccupancy;
+    field7 = ratio;
   }
     lowpulseoccupancy = 0;
-    snprintf(msg, sizeof(msg),"{\"1\":\"%.2f\", \"2\":\"%.1f\", \"3\":\"%.2f\", \"4\":\"%.2f\", \"5\":\"%.3f\", \"6\":\"%.2f\", \"7\":\"%.1f\", \"8\":\"%.4f\", \"k\":\"%s\"}", field1, field2, field3, field4, field5, field6, field7, field8, myWriteAPIKey);
+    snprintf(msg, sizeof(msg),"{\"temp\":\"%.2f\", \"pressure\":\"%.1f\", \"humidity\":\"%.2f\", \"aq_slope\":\"%.2f\", \"voc_level\":\"%.3f\", \"lowpulseoccupancy\":\"%.2f\", \"dust\":\"%.1f\", \"deviceid\":\"%s\"}", field1, field2, field3, field4, field5, field6, field7, MySiteID);
     Particle.publish(eventName, msg, PRIVATE, NO_ACK);
 
+
+
+    lowpulseoccupancy = 0;
+    lastInterval = millis();
+
+
+
+
+
+
+
+    
+  }
 }
 
-}
 
 
 
 
 
 
-
-//function to run OLED display.
-void updateDisplay(float temp, float humidity, float pressure, long ratio)
+int getAirQualityNum()
 {
- SeeedOled.clearDisplay();
+  int qual_int = aqSensor.slope();
+  return qual_int;
+}
 
- SeeedOled.setTextXY(0, 3);
- SeeedOled.putNumber(ratio);
+String getAirQuality()
+{
+  int quality = aqSensor.slope();
+  String qual = "None";
 
- SeeedOled.setTextXY(2, 0);
- SeeedOled.putString("Temp: ");
- SeeedOled.putNumber(temp);
- SeeedOled.putString("C");
+  if (quality == AirQualitySensor::FORCE_SIGNAL)
+  {
+    qual = "Danger";
+  }
+  else if (quality == AirQualitySensor::HIGH_POLLUTION)
+  {
+    qual = "High Pollution";
+  }
+  else if (quality == AirQualitySensor::LOW_POLLUTION)
+  {
+    qual = "Low Pollution";
+  }
+  else if (quality == AirQualitySensor::FRESH_AIR)
+  {
+    qual = "Fresh Air";
+  }
 
- SeeedOled.setTextXY(3, 0);
- SeeedOled.putString("Humidity: ");
- SeeedOled.putNumber(humidity);
- SeeedOled.putString("%");
+  return qual;
+}
 
- SeeedOled.setTextXY(4, 0);
- SeeedOled.putString("Press: ");
- SeeedOled.putNumber(pressure);
- SeeedOled.putString(" hPa");
+int getBMEValues(int &temp, int &pressure, int &humidity)
+{
+  temp = (int)bme.readTemperature();
+  pressure = (int)(bme.readPressure() / 100.0F);
+  humidity = (int)bme.readHumidity();
 
- if (concentration > 1)
- {
-   SeeedOled.setTextXY(5, 0);
-   SeeedOled.putString("Dust: ");
-   SeeedOled.putNumber(concentration); // Cast our float to an int to make it more compact
-   SeeedOled.putString(" pcs/L");
- }
+  return 1;
+}
+
+void getDustSensorReadings()
+{
+  // This particular dust sensor returns 0s often, so let's filter them out by making sure we only
+  // capture and use non-zero LPO values for our calculations once we get a good reading.
+  if (lowpulseoccupancy == 0)
+  {
+    lowpulseoccupancy = last_lpo;
+  }
+  else
+  {
+    last_lpo = lowpulseoccupancy;
+  }
+
+  ratio = lowpulseoccupancy / (SENSOR_READING_INTERVAL * 10.0);                   // Integer percentage 0=>100
+  concentration = 1.1 * pow(ratio, 3) - 3.8 * pow(ratio, 2) + 520 * ratio + 0.62; // using spec sheet curve
+
+  Serial.printlnf("LPO: %d", lowpulseoccupancy);
+  Serial.printlnf("Ratio: %f%%", ratio);
+  Serial.printlnf("Concentration: %f pcs/L", concentration);
+}
+
+
+
+
+
+
+void updateDisplay(int temp, int humidity, int pressure, String airQuality, int qual_int)
+{
+  SeeedOled.clearDisplay();
+
+  SeeedOled.setTextXY(0, 3);
+  SeeedOled.putString(airQuality);
+
+  SeeedOled.setTextXY(1, 0);
+  SeeedOled.putString("VOC Levels: ");
+  SeeedOled.putNumber(qual_int);
+
+
+  SeeedOled.setTextXY(2, 0);
+  SeeedOled.putString("Temp: ");
+  SeeedOled.putNumber(temp);
+  SeeedOled.putString("C");
+
+  SeeedOled.setTextXY(3, 0);
+  SeeedOled.putString("Humidity: ");
+  SeeedOled.putNumber(humidity);
+  SeeedOled.putString("%");
+
+  SeeedOled.setTextXY(4, 0);
+  SeeedOled.putString("Press: ");
+  SeeedOled.putNumber(pressure);
+  SeeedOled.putString(" hPa");
+
+  if (concentration > 1)
+  {
+    SeeedOled.setTextXY(5, 0);
+    SeeedOled.putString("Dust: ");
+    SeeedOled.putNumber(concentration); // Will cast our float to an int to make it more compact
+    SeeedOled.putString(" pcs/L");
+  }
 }
 ```
 
@@ -240,14 +319,37 @@ To setup a webhook, go to [console.particle.io](http://console.particle.io) and 
 
 From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below).
 ![Page for selecting the type of integration being used (here we are using a webhook)](add_webhook.png)
-Once you have clicked this button, you will see a webform like the one below. We will enter information about the Thingspeak server that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the data dashboards we have setup on thingspeak.com.
+Once you have clicked this button, you will see a webform like the one below. We will enter information about the GeoEDF server at MyGeoHub that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the database hosted at [mygeohub.org](http://mygeohub.org).
 ![Here's what the webhook setup form looks like when it's blank](webhook_blank.png)
 
-You should fill out the form like you see below. The event name should be "env-vals", the url should be "https://api.thingspeak.com/update", the request type should be set to "POST", the request format should be set to "Web Form" and the device can be set to "Any" since we only have one device associated with our accounts. When you are done your form should look like the one below.
-![Configuring a webhook for Thingspeak](webhook_thingspeak.png)
+You should fill out the form like you see below. The event name should be "env-vals", the url should be "http://149.165.157.11:4792/airqualitysensordb/data", the request type should be set to "POST", the request format should be set to "JSON" and the device can be set to "Any" since we have a device ID parameter in the JSON object to keep track of each device. When you are done your form should look like the one below.
+![Configuring a webhook for GeoEDF](webhook_geoedf_url.png)
 
-When you have entered that information click the link at the bottom of the page that says "Advanced Settings" that will reveal an additional menu at the bottom of the page. You want to add the rows just like you see in this image. The only exception is that you want to use the api_key I gave you rather than the api_key that is in the image below.
+Now, click on *Advanced Settings*. Click the radio button under JSON that says "Custom" and then paste the following code into the resulting textbox. When you're done your page should look like the picture below.
 
-![Configuring a advanced settings for the webhook for Thingspeak](webhook_thingspeak_advanced.png)
+```{c eval=FALSE}
 
-Once you are done your device should start automatically sending data to your thingspeak dashboard. Your thingspeak dashboard's website is linked to your channel ID. The channel ID for my dashboard is 1030130 so my dashboard is located at [https://thingspeak.com/channels/1030130](https://thingspeak.com/channels/1030130).
+```
+
+
+![Configuring advanced settings for the webhook for GeoEDF](webhook_geoedf_json.png)
+
+Now you have one more thing to do. Scroll back to the top and select "CUSTOM TEMPLATE". From there you want to paste the following code into the text box labeled "Particle webhook template reference". When you are done and your page looks like below, you are ready to hit SAVE!
+
+```{c eval=FALSE}
+{
+    "event": "env-vals",
+    "url": "http://149.165.157.11:4792/airqualitysensordb/data",
+    "requestType": "POST",
+    "noDefaults": true,
+    "rejectUnauthorized": false,
+    "json": {
+        "method": "insert",
+        "data": "{{{PARTICLE_EVENT_VALUE}}}",
+        "coreid": "{{{PARTICLE_DEVICE_ID}}}",
+        "published_at": "{{{PARTICLE_PUBLISHED_AT}}}"
+    }
+}
+```
+
+![GeoEDF template page for Particle webhook](webhook_geoedf_template.png)
