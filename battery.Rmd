@@ -12,9 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Testing battery life and the impact of VOCs from tape on the air quality sensor.
-When we met in class, wanted to know how long the battery life was on these sensors. I started by logging data and sending it to the web at 10 second intervals. Logging this way gave us about 12 hours of battery life. Currently I'm logging at 15 minute intervals and will update the page when I'm done with that experiment.
+I wanted to know how long the battery life was on these sensors. I started by logging data and sending it to the web at 10 second intervals. Logging this way gave us about 12 hours of battery life. Currently I'm logging at 15 minute intervals and will update the page when I'm done with that experiment.
 
-Some people wanted to mount their sensors with tape, but there was concern that the volatile organic compounds (VOCs) from tape (the glue smell is VOCs) would disrupt the air quality sensor since the air quality sensor is designed to detect all sorts of VOC. I found that while there was intially a spike in VOCs from the sensor, the tape seemed to degas after several hours.
+We want to mount our sensors with velocro, but there was concern that the volatile organic compounds (VOCs) from the adhesive (the smell of glue is VOCs) would disrupt the air quality sensor since the air quality sensor is designed to detect all sorts of VOC. I found that while there was intially a spike in VOCs from the sensor, the tape seemed to degas after several hours.
 
 I put this sensor next to my computer to run this test. You can see from the dust sensor when I started to work near my computer again.
 
