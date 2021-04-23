@@ -632,9 +632,14 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
 <p class="caption">The Particle Console screen for setting up new web integrations (e.g., webhooks)</p>
 </div>
 <p>From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below). <img src="add_webhook.png" alt="Page for selecting the type of integration being used (here we are using a webhook)" /> Once you have clicked this button, you will see a webform like the one below. We will enter information about the GeoEDF server at MyGeoHub that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the database hosted at <a href="http://mygeohub.org">mygeohub.org</a>. <img src="webhook_blank.png" alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
-<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="http://149.165.157.11:4792/airqualitysensordb/data" class="uri">http://149.165.157.11:4792/airqualitysensordb/data</a>”, the request type should be set to “POST”, the request format should be set to “JSON” and the device can be set to “Any” since we have a device ID parameter in the JSON object to keep track of each device. When you are done your form should look like the one below. <img src="webhook_geoedf_url.png" alt="Configuring a webhook for GeoEDF" /></p>
+<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="http://149.165.157.202:4792/aqsensors/data" class="uri">http://149.165.157.202:4792/aqsensors/data</a>”, the request type should be set to “POST”, the request format should be set to “JSON” and the device can be set to “Any” since we have a device ID parameter in the JSON object to keep track of each device. When you are done your form should look like the one below. <img src="webhook_geoedf_url.png" alt="Configuring a webhook for GeoEDF" /></p>
 <p>Now, click on <em>Advanced Settings</em>. Click the radio button under JSON that says “Custom” and then paste the following code into the resulting textbox. When you’re done your page should look like the picture below.</p>
-<pre class="c"><code></code></pre>
+<pre class="c"><code>{
+  &quot;method&quot;: &quot;insert&quot;,
+  &quot;data&quot;: &quot;{{{PARTICLE_EVENT_VALUE}}}&quot;,
+  &quot;coreid&quot;: &quot;{{{PARTICLE_DEVICE_ID}}}&quot;,
+  &quot;published_at&quot;: &quot;{{{PARTICLE_PUBLISHED_AT}}}&quot;
+}</code></pre>
 <div class="figure">
 <img src="webhook_geoedf_json.png" alt="Configuring advanced settings for the webhook for GeoEDF" />
 <p class="caption">Configuring advanced settings for the webhook for GeoEDF</p>
@@ -642,7 +647,7 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
 <p>Now you have one more thing to do. Scroll back to the top and select “CUSTOM TEMPLATE”. From there you want to paste the following code into the text box labeled “Particle webhook template reference”. When you are done and your page looks like below, you are ready to hit SAVE!</p>
 <pre class="c"><code>{
     &quot;event&quot;: &quot;env-vals&quot;,
-    &quot;url&quot;: &quot;http://149.165.157.11:4792/airqualitysensordb/data&quot;,
+    &quot;url&quot;: &quot;http://149.165.157.202:4792/aqsensors/data&quot;,
     &quot;requestType&quot;: &quot;POST&quot;,
     &quot;noDefaults&quot;: true,
     &quot;rejectUnauthorized&quot;: false,
