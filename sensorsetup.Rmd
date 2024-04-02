@@ -72,7 +72,7 @@ float concentration = 0;
 //Keep eventName the same, this helps the webhook forward your data.
 //Change MySiteID to name your device.
 const char * eventName =            "env-vals";    
-const char * MySiteID = "South Oakland Lafayette IN";
+const char * MySiteID = "S. Oakland Lafayette IN";
 
 
 float field1;  
