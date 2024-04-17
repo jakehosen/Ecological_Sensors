@@ -1,6 +1,6 @@
 ---
 title: "Ecological Sensors & Data (FNR-498-042)"
-author: "JDH"
+author: "JH"
 output: html_document
 ---
 
