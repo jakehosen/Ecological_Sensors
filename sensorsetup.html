@@ -14,7 +14,7 @@
 
 <title>Particle Argon Setup</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -33,8 +33,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -144,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -177,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -186,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -318,27 +315,69 @@ $(document).ready(function () {
 <h2>Stuff to install first</h2>
 <ul>
 <li><a href="https://login.particle.io/">A Particle account</a></li>
-<li>The Particle mobile app for <a href="https://apps.apple.com/us/app/particle-iot/id991459054">iOS</a> or <a href="https://play.google.com/store/apps/details?id=io.particle.android.app&amp;hl=en_US">Android</a></li>
+<li>The Particle mobile app for <a
+href="https://apps.apple.com/us/app/particle-iot/id991459054">iOS</a> or
+<a
+href="https://play.google.com/store/apps/details?id=io.particle.android.app&amp;hl=en_US">Android</a></li>
 <li><a href="https://particle.io/workbench">Particle Workbench</a></li>
 </ul>
-<p><strong>This tutorial is based on the <a href="https://docs.particle.io/quickstart/aqmk-project/">air quality kit tutorial available from Particle</a>.</strong> I strongly recommend reading through that tutorial before you get started.</p>
+<p><strong>This tutorial is based on the <a
+href="https://docs.particle.io/quickstart/aqmk-project/">air quality kit
+tutorial available from Particle</a>.</strong> I strongly recommend
+reading through that tutorial before you get started.</p>
 </div>
-<div id="get-started-assembling-and-pairing-your-device" class="section level2">
+<div id="get-started-assembling-and-pairing-your-device"
+class="section level2">
 <h2>Get started: assembling and pairing your device</h2>
-<p><strong>I’ve put together a Youtube video that will help you assemble your device:</strong> <a href="https://www.youtube.com/watch?v=aPB4ETfzj9M" title="Particle Assembly"><img src="https://raw.githubusercontent.com/jakehosen/Ecological_Sensors/master/assembly_youtube.png" alt="Assembling and Pairing Particle Microcontroller" /></a></p>
-<p>Great, so now you’ve put together your device it’s time to program your device.</p>
+<p><strong>I’ve put together a Youtube video that will help you assemble
+your device:</strong> <a
+href="https://www.youtube.com/watch?v=aPB4ETfzj9M"
+title="Particle Assembly"><img
+src="https://raw.githubusercontent.com/jakehosen/Ecological_Sensors/master/assembly_youtube.png"
+alt="Assembling and Pairing Particle Microcontroller" /></a></p>
+<p>Great, so now you’ve put together your device it’s time to program
+your device.</p>
 </div>
-<div id="programming-your-particle-argon-microcontroller" class="section level2">
+<div id="programming-your-particle-argon-microcontroller"
+class="section level2">
 <h2>Programming your Particle Argon microcontroller</h2>
-<p>Now that you have the device assembled and paired, you want to plug it into the computer using the USB cable that was supplied. Next open up the Particle Workbench (do this by opening Visual Studio Code – commonly referred to as VS Code). When you’ve done that, you’ll be ready to follow along with the tutorial in this next video. I recommend watching the video and then try it for yourself with the air quality kit tutorial and the video as reference. <a href="https://youtu.be/htxbdjW4TLk" title="Particle Programming"><img src="https://github.com/jakehosen/Ecological_Sensors/raw/master/particle_programming_youtube.png" alt="Programming your Particle Argon" /></a></p>
-<p>Okay, now that you’ve completed the work in this video, your sensor package is collecting data and sending those data to the cloud. The problem is that now we have to actually save our data to the cloud somewhere. That’s the next exciting part.</p>
+<p>Now that you have the device assembled and paired, you want to plug
+it into the computer using the USB cable that was supplied. Next open up
+the Particle Workbench (do this by opening Visual Studio Code – commonly
+referred to as VS Code). When you’ve done that, you’ll be ready to
+follow along with the tutorial in this next video. I recommend watching
+the video and then try it for yourself with the air quality kit tutorial
+and the video as reference. <a href="https://youtu.be/htxbdjW4TLk"
+title="Particle Programming"><img
+src="https://github.com/jakehosen/Ecological_Sensors/raw/master/particle_programming_youtube.png"
+alt="Programming your Particle Argon" /></a></p>
+<p>Okay, now that you’ve completed the work in this video, your sensor
+package is collecting data and sending those data to the cloud. The
+problem is that now we have to actually save our data to the cloud
+somewhere. That’s the next exciting part.</p>
 </div>
-<div id="i-tried-to-follow-the-tutorial-and-video-but-im-getting-stuck" class="section level2">
+<div id="i-tried-to-follow-the-tutorial-and-video-but-im-getting-stuck"
+class="section level2">
 <h2>I tried to follow the tutorial and video, but I’m getting stuck</h2>
-<p>That’s totally fine. I’ve included a working version of the code below. Watch this video and I’ll explain how to get started very quickly using this code snippet.</p>
-<p><strong>NOTE:</strong> The point of this class is to learn how to use these devices in a functional matter. That means I suggest at least trying to work through the code as I describe above and is in the tutorial. That said, it is a little tricky and because we are working remotely it’s not as easy to work through problems remotely. So if you give the above information a shot and it doesn’t work, go ahead and use the script below, but do try to work through the material above – I think you’ll find it beneficial.</p>
-<p><strong>Here’s the video explaining how to load the code snippet below onto your Particle Argon:</strong> <a href="https://youtu.be/yWhY9f3QVWo" title="Particle Quick Programming"><img src="https://github.com/jakehosen/Ecological_Sensors/raw/master/particle_quick_youtube.png" alt="Quickly Programming your Particle" /></a></p>
-<p><strong>Here’s the code that you past into VS Code following the instructions in the video:</strong></p>
+<p>That’s totally fine. I’ve included a working version of the code
+below. Watch this video and I’ll explain how to get started very quickly
+using this code snippet.</p>
+<p><strong>NOTE:</strong> The point of this class is to learn how to use
+these devices in a functional matter. That means I suggest at least
+trying to work through the code as I describe above and is in the
+tutorial. That said, it is a little tricky and because we are working
+remotely it’s not as easy to work through problems remotely. So if you
+give the above information a shot and it doesn’t work, go ahead and use
+the script below, but do try to work through the material above – I
+think you’ll find it beneficial.</p>
+<p><strong>Here’s the video explaining how to load the code snippet
+below onto your Particle Argon:</strong> <a
+href="https://youtu.be/yWhY9f3QVWo"
+title="Particle Quick Programming"><img
+src="https://github.com/jakehosen/Ecological_Sensors/raw/master/particle_quick_youtube.png"
+alt="Quickly Programming your Particle" /></a></p>
+<p><strong>Here’s the code that you past into VS Code following the
+instructions in the video:</strong></p>
 <pre class="c"><code>/*
  * Air Quality Kit for FNR498
  * Setup sensor and connect to MyGeoHub
@@ -372,7 +411,7 @@ float concentration = 0;
 //Keep eventName the same, this helps the webhook forward your data.
 //Change MySiteID to name your device.
 const char * eventName =            &quot;env-vals&quot;;    
-const char * MySiteID = &quot;South Oaklan Lafayette IN&quot;;
+const char * MySiteID = &quot;S. Oakland Lafayette IN&quot;;
 
 
 float field1;  
@@ -391,7 +430,7 @@ int getBMEValues(int &amp;temp, int &amp;humidity, int &amp;pressure);
 void getDustSensorReadings();
 String getAirQuality();
 void createEventPayload(int temp, int humidity, int pressure, String airQuality);
-void updateDisplay(int temp, int humidity, int pressure, String airQuality);
+void updateDisplay(int temp, int humidity, int pressure, String airQuality, int qual_int);
 
 void setup()
 {
@@ -455,7 +494,9 @@ void loop()
   if ((millis() - lastInterval) &gt; SENSOR_READING_INTERVAL)
   {
     String quality = getAirQuality();
-    int qual_int = getAirQualityNum();
+
+    int qual_int = aqSensor.slope();
+    //int qual_int = getAirQualityNum();
     Serial.printlnf(&quot;Air Quality: %s&quot;, quality.c_str());
 
     getBMEValues(temp, pressure, humidity);
@@ -494,11 +535,6 @@ void loop()
 
 
 
-int getAirQualityNum()
-{
-  int qual_int = aqSensor.slope();
-  return qual_int;
-}
 
 String getAirQuality()
 {
@@ -599,15 +635,46 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
 </div>
 <div id="configuring-a-webhook." class="section level2">
 <h2>Configuring a webhook.</h2>
-<p>Now that your data are being streamed to the Particle’s servers on the web, we need to tell the servers where we’re going to store the data. We do this with a webhook that essentially reroutes our data.</p>
-<p>To setup a webhook, go to <a href="http://console.particle.io">console.particle.io</a> and login with the account you’ve created. On the left side of the webpage are a bunch of icons that have labels that pop up when you hover the mouse over them. Click on the one that says “integrations”. When you do that you will see a page like the one below. Click on the box with the (+) labeled “New Integration”:</p>
-<div class="figure">
-<img src="new_integration.png" alt="" />
-<p class="caption">The Particle Console screen for setting up new web integrations (e.g., webhooks)</p>
+<p>Now that your data are being streamed to the Particle’s servers on
+the web, we need to tell the servers where we’re going to store the
+data. We do this with a webhook that essentially reroutes our data.</p>
+<p>To setup a webhook, go to <a
+href="http://console.particle.io">console.particle.io</a> and login with
+the account you’ve created. On the left side of the webpage are a bunch
+of icons that have labels that pop up when you hover the mouse over
+them. Click on the one that says “integrations”. When you do that you
+will see a page like the one below. Click on the box with the (+)
+labeled “New Integration”:</p>
+<div class="float">
+<img src="new_integration.png"
+alt="The Particle Console screen for setting up new web integrations (e.g., webhooks)" />
+<div class="figcaption">The Particle Console screen for setting up new
+web integrations (e.g., webhooks)</div>
 </div>
-<p>From here, we are going to configure a webhook, so click on the box labeled webhook on the next page (as seen below). <img src="add_webhook.png" alt="Page for selecting the type of integration being used (here we are using a webhook)" /> Once you have clicked this button, you will see a webform like the one below. We will enter information about the GeoEDF server at MyGeoHub that will be receiving our data in this webform. This will tell the Particle servers how to forward the data collected on our sensors to the database hosted at <a href="http://mygeohub.org">mygeohub.org</a>. <img src="webhook_blank.png" alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
-<p>You should fill out the form like you see below. The event name should be “env-vals”, the url should be “<a href="https://api.streamci.org:8792/data" class="uri">https://api.streamci.org:8792/data</a>”, the request type should be set to “POST”, the request format should be set to “JSON” and the device can be set to “Any” since we have a device ID parameter in the JSON object to keep track of each device. When you are done your form should look like the one below. <img src="webhook_geoedf_url.png" alt="Configuring a webhook for GeoEDF" /></p>
-<p>Now, click on <em>Advanced Settings</em>. Click the radio button under JSON that says “Custom” and then paste the following code into the resulting textbox. When you’re done your page should look like the picture below.</p>
+<p>From here, we are going to configure a webhook, so click on the box
+labeled webhook on the next page (as seen below). <img
+src="add_webhook.png"
+alt="Page for selecting the type of integration being used (here we are using a webhook)" />
+Once you have clicked this button, you will see a webform like the one
+below. We will enter information about the GeoEDF server at MyGeoHub
+that will be receiving our data in this webform. This will tell the
+Particle servers how to forward the data collected on our sensors to the
+database hosted at <a href="http://mygeohub.org">mygeohub.org</a>. <img
+src="webhook_blank.png"
+alt="Here’s what the webhook setup form looks like when it’s blank" /></p>
+<p>You should fill out the form like you see below. The event name
+should be “env-vals”, the url should be “<a
+href="https://api.streamci.org:8792/data"
+class="uri">https://api.streamci.org:8792/data</a>”, the request type
+should be set to “POST”, the request format should be set to “JSON” and
+the device can be set to “Any” since we have a device ID parameter in
+the JSON object to keep track of each device. When you are done your
+form should look like the one below. <img src="webhook_geoedf_url.png"
+alt="Configuring a webhook for GeoEDF" /></p>
+<p>Now, click on <em>Advanced Settings</em>. Click the radio button
+under JSON that says “Custom” and then paste the following code into the
+resulting textbox. When you’re done your page should look like the
+picture below.</p>
 <pre class="c"><code>{
   &quot;auth&quot;: {
     &quot;target&quot;: &quot;aqsensors&quot;,
@@ -630,11 +697,16 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
     }
   }
 }</code></pre>
-<div class="figure">
-<img src="webhook_geoedf_json.png" alt="" />
-<p class="caption">Configuring advanced settings for the webhook for GeoEDF</p>
+<div class="float">
+<img src="webhook_geoedf_json.png"
+alt="Configuring advanced settings for the webhook for GeoEDF" />
+<div class="figcaption">Configuring advanced settings for the webhook
+for GeoEDF</div>
 </div>
-<p>Now you have one more thing to do. Scroll back to the top and select “CUSTOM TEMPLATE”. From there you want to paste the following code into the text box labeled “Particle webhook template reference”. When you are done and your page looks like below, you are ready to hit SAVE!</p>
+<p>Now you have one more thing to do. Scroll back to the top and select
+“CUSTOM TEMPLATE”. From there you want to paste the following code into
+the text box labeled “Particle webhook template reference”. When you are
+done and your page looks like below, you are ready to hit SAVE!</p>
 <pre class="c"><code>{
     &quot;event&quot;: &quot;env-vals&quot;,
     &quot;url&quot;: &quot;https://api.streamci.org:8792/data&quot;,
@@ -664,9 +736,10 @@ void updateDisplay(int temp, int humidity, int pressure, String airQuality, int 
         }
     }
 }</code></pre>
-<div class="figure">
-<img src="webhook_geoedf_template.png" alt="" />
-<p class="caption">GeoEDF template page for Particle webhook</p>
+<div class="float">
+<img src="webhook_geoedf_template.png"
+alt="GeoEDF template page for Particle webhook" />
+<div class="figcaption">GeoEDF template page for Particle webhook</div>
 </div>
 </div>
 

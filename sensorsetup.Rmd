@@ -72,7 +72,7 @@ float concentration = 0;
 //Keep eventName the same, this helps the webhook forward your data.
 //Change MySiteID to name your device.
 const char * eventName =            "env-vals";    
-const char * MySiteID = "S Oakland Lafayette IN";
+const char * MySiteID = "S. Oakland Lafayette IN";
 
 
 float field1;  
@@ -91,7 +91,7 @@ int getBMEValues(int &temp, int &humidity, int &pressure);
 void getDustSensorReadings();
 String getAirQuality();
 void createEventPayload(int temp, int humidity, int pressure, String airQuality);
-void updateDisplay(int temp, int humidity, int pressure, String airQuality);
+void updateDisplay(int temp, int humidity, int pressure, String airQuality, int qual_int);
 
 void setup()
 {
@@ -155,7 +155,11 @@ void loop()
   if ((millis() - lastInterval) > SENSOR_READING_INTERVAL)
   {
     String quality = getAirQuality();
-    int qual_int = getAirQualityNum();
+
+
+
+    int qual_int = aqSensor.slope();
+    //int qual_int = getAirQualityNum();
     Serial.printlnf("Air Quality: %s", quality.c_str());
 
     getBMEValues(temp, pressure, humidity);
@@ -166,7 +170,6 @@ void loop()
     getDustSensorReadings();
 
     updateDisplay(temp, humidity, pressure, quality, qual_int);
-
 
     field1 = temp;
     field2 = pressure;
@@ -182,16 +185,8 @@ void loop()
     snprintf(msg, sizeof(msg),"{\"temp\":\"%.2f\", \"pressure\":\"%.1f\", \"humidity\":\"%.2f\", \"aq_slope\":\"%.2f\", \"voc_level\":\"%.3f\", \"lowpulseoccupancy\":\"%.2f\", \"dust\":\"%.1f\", \"deviceid\":\"%s\"}", field1, field2, field3, field4, field5, field6, field7, MySiteID);
     Particle.publish(eventName, msg, PRIVATE, NO_ACK);
 
-
-
     lowpulseoccupancy = 0;
     lastInterval = millis();
-
-
-
-
-
-
 
     
   }
@@ -203,11 +198,6 @@ void loop()
 
 
 
-int getAirQualityNum()
-{
-  int qual_int = aqSensor.slope();
-  return qual_int;
-}
 
 String getAirQuality()
 {
