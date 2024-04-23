@@ -1,0 +1,55 @@
+---
+title: "Data Sources for Synthesis"
+author: ""
+output: html_document
+---
+<br>
+
+## General Data Sources
+* [Environmental Data Initiative EDI](https://edirepository.org/): Very wide variety of data (mostly research).
+* [Data Portal](http://datacatalogs.org/): A list of open data portals. This is a very wide variety of datasets (includes socioeconomic and other datasets in addition to environmental).
+* [National Forest Service](https://data.fs.usda.gov/geodata/edw/datasets.php): Datasets for silviculture and biodiversity.
+* [US EPA](https://www.epa.gov/data): air quality, environmental chemistry (Soil, Groundwater, and Freshwaters).
+* [EPA Enterprise Data Catalog](https://www.epa.gov/data/enterprise-data-catalog): Another set of data maintained by EPA.
+* [data.world](https://data.world/datasets/environment): General repository of data.
+* [Resource Watch](https://resourcewatch.org/data/explore)
+* [NOAA One Stop](https://data.noaa.gov/onestop/#/): Data from National Oceanic and Atmospheric Administration.
+* [UNEP Pollution Data](https://www.unep.org/beatpollution/forms-pollution/online-data): United National Environmental Program (UNEP) pollution data.
+
+## Specific Projects
+* [NEON (National Environmental Observation Network)](http://data.neonscience.org/): Wide variety of data from more than 3 dozen sites across North America.
+
+## Animal Movement
+* [Movebank](https://www.movebank.org/): Dataset of animal tracking data using GPS/location trackers.
+
+## Camera Traps
+* [Labeled Information Library of Alexandria: Biology and Conservation](https://lila.science/datasets): Trail camera images for a variety of wildlife and habitats worldwide.
+* [CaltechCameraTraps](https://beerys.github.io/CaltechCameraTraps/): Hundreds of thousands of images from a variety of projects.
+* [Wildlife Insights](https://www.wildlifeinsights.org/get-started/data-download/public)
+* [Florida Wildlife Camera Trap Dataset](https://www.crcv.ucf.edu/research/projects/florida-wildlife-camera-trap-dataset/): https://www.crcv.ucf.edu/research/projects/florida-wildlife-camera-trap-dataset/.
+
+## Biodiversity
+* [Nature Serve](https://www.natureserve.org/biodiversity-science/conservation-topics/data)
+
+## Vegetation
+* [Veg Bank](http://vegbank.org/vegbank/index.jsp)
+
+## Geospatial (GIS) Data
+* [Google Earth Engine](https://earthengine.google.com/): Wide variety of satellite geospatial data.
+* [Soil Grids](http://soilgrids.org): Global dataset of soil properties.
+* [ESRI Data](https://www.esri.com/en-us/arcgis/products/data/data-portfolio/environmental)
+
+## Air Quality/Climate
+* [Purple Air Network](https://www2.purpleair.com/): Air quality sensor network run by communities.
+* [US EPA Air Quality](https://www.airnow.gov/): Air quality data synthesis (includes Purple Air data for some datasets).
+* [Climate Trace](https://climatetrace.org/): Greenhouse gas data (global).
+* [Data Hub](https://datahub.io/collections/climate-change): Archive of climate data.
+* [NCAR Data](https://climatedataguide.ucar.edu/): Atmospheric data from the National Center for Atmospheric Research (NCAR).
+
+## Water Quality & Hydrology
+* [StreamPulse](data.streampulse.org): Water chemistry sensor data from a national and global network.
+* [US Geological Survey National Water Information System](https://waterdata.usgs.gov/nwis?): National dataset of hydrology and water quality for lakes, rivers, streams, and groundwater.
+
+## Policy
+[International Environmental Agreements Database Project](https://iea.uoregon.edu/): Includes a lot of policy/government information.
+[Organization for Economic Co-operation and Development (OECD) Environmental Data](https://www.oecd.org/env/indicators-modelling-outlooks/data-and-indicators.htm)

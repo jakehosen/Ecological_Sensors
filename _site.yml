@@ -13,9 +13,9 @@ navbar:
     - text: "Tests"
       icon: fa-battery-three-quarters
       href: battery.html
-    - text: "DataDash"
+    - text: "Data Synthesis"
       icon: fa-columns
-      href: http://ecosystemscience.io:3838/Data_Dashboard/
+      href: datasources.html
     - text: "Brightspace"
       icon: fa-sun
       href: https://purdue.brightspace.com/d2l/home/213362
