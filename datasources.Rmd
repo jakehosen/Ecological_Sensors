@@ -51,5 +51,5 @@ output: html_document
 * [US Geological Survey National Water Information System](https://waterdata.usgs.gov/nwis?): National dataset of hydrology and water quality for lakes, rivers, streams, and groundwater.
 
 ## Policy
-[International Environmental Agreements Database Project](https://iea.uoregon.edu/): Includes a lot of policy/government information.
-[Organization for Economic Co-operation and Development (OECD) Environmental Data](https://www.oecd.org/env/indicators-modelling-outlooks/data-and-indicators.htm)
+* [International Environmental Agreements Database Project](https://iea.uoregon.edu/): Includes a lot of policy/government information.
+* [Organization for Economic Co-operation and Development (OECD) Environmental Data](https://www.oecd.org/env/indicators-modelling-outlooks/data-and-indicators.htm)
