@@ -1,0 +1,37 @@
+---
+title: "Raspberry Pi SSH Setup"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Enable SSH
+# Method 1
+1) Boot your Raspberry Pi.
+2) Open Raspi-Config (```sudo raspi-config```).
+3) Select ```3 Interface Options```.
+4) Select ```SSH Enable```.
+
+# Method 2
+1) Open Raspberry Pi SD Card.
+2) Open ```bootfs``` drive/partition.
+3) Create an empty file called ```SSH``` either with notepad or with nano.
+
+# Connect your Raspberry Pi to your computer with a USB cable
+
+
+# Raspberry Pi NoIR Camera Timelapse Setup Instructions
+
+This document provides step-by-step instructions for setting up a Python script that automatically takes photos using a Raspberry Pi NoIR camera every 15 minutes and starts on boot.
+
+## Getting your login setup
+* Create a user called "pi".
+* Using the GUI (windows) interface, setup your wifi login.
+* Open a terminal and type ```sudo raspi-config```.
+* When you open this menu, select "1. System Options". Then select "B5 Boot / Auto Login". Then Select "B2 Console Autologin".
+* Exit from raspi-config and reboot your system.
+

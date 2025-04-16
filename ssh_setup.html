@@ -11,7 +11,7 @@
 
 
 
-<title>Raspberry Pi Camera Loop Setup</title>
+<title>Raspberry Pi SSH Setup</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -304,13 +304,35 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Raspberry Pi Camera Loop Setup</h1>
+<h1 class="title toc-ignore">Raspberry Pi SSH Setup</h1>
 
 </div>
 
 
-<div id="stuff-to-install-first" class="section level2">
-<h2>Stuff to install first</h2>
+<div id="enable-ssh" class="section level2">
+<h2>Enable SSH</h2>
+</div>
+<div id="method-1" class="section level1">
+<h1>Method 1</h1>
+<ol style="list-style-type: decimal">
+<li>Boot your Raspberry Pi.</li>
+<li>Open Raspi-Config (<code>sudo raspi-config</code>).</li>
+<li>Select <code>3 Interface Options</code>.</li>
+<li>Select <code>SSH Enable</code>.</li>
+</ol>
+</div>
+<div id="method-2" class="section level1">
+<h1>Method 2</h1>
+<ol style="list-style-type: decimal">
+<li>Open Raspberry Pi SD Card.</li>
+<li>Open <code>bootfs</code> drive/partition.</li>
+<li>Create an empty file called <code>SSH</code> either with notepad or
+with nano.</li>
+</ol>
+</div>
+<div id="connect-your-raspberry-pi-to-your-computer-with-a-usb-cable"
+class="section level1">
+<h1>Connect your Raspberry Pi to your computer with a USB cable</h1>
 </div>
 <div id="raspberry-pi-noir-camera-timelapse-setup-instructions"
 class="section level1">
@@ -328,171 +350,6 @@ camera every 15 minutes and starts on boot.</p>
 Boot / Auto Login”. Then Select “B2 Console Autologin”.</li>
 <li>Exit from raspi-config and reboot your system.</li>
 </ul>
-</div>
-<div id="python-script-timelapse.py" class="section level2">
-<h2>Python Script (timelapse.py)</h2>
-<p>Create the Python script that will control the camera:</p>
-<pre class="python"><code>#!/usr/bin/env python3
-# timelapse.py - Takes photos every 15 minutes using libcamera
-
-import os
-import time
-import datetime
-import subprocess
-from pathlib import Path
-
-# Configuration
-INTERVAL = 15 * 60  # 15 minutes in seconds
-SAVE_DIRECTORY = &quot;/home/pi/timelapse&quot;
-IMAGE_PREFIX = &quot;timelapse_&quot;
-
-def setup():
-    &quot;&quot;&quot;Create the save directory if it doesn&#39;t exist.&quot;&quot;&quot;
-    Path(SAVE_DIRECTORY).mkdir(parents=True, exist_ok=True)
-    print(f&quot;Images will be saved to: {SAVE_DIRECTORY}&quot;)
-
-def take_photo():
-    &quot;&quot;&quot;Take a photo using libcamera-still and save it with timestamp.&quot;&quot;&quot;
-    timestamp = datetime.datetime.now().strftime(&quot;%Y%m%d_%H%M%S&quot;)
-    filename = f&quot;{IMAGE_PREFIX}{timestamp}.jpg&quot;
-    filepath = os.path.join(SAVE_DIRECTORY, filename)
-    
-    try:
-        # Using libcamera-still command
-        command = [
-            &quot;libcamera-still&quot;,
-            &quot;-o&quot;, filepath,
-            &quot;--nopreview&quot;,
-            &quot;--timeout&quot;, &quot;1000&quot;  # 1 second timeout
-        ]
-        
-        # Execute the command
-        subprocess.run(command, check=True)
-        print(f&quot;Photo taken: {filename}&quot;)
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f&quot;Error taking photo: {e}&quot;)
-        return False
-    except Exception as e:
-        print(f&quot;Unexpected error: {e}&quot;)
-        return False
-
-def main():
-    &quot;&quot;&quot;Main function to run the timelapse.&quot;&quot;&quot;
-    setup()
-    print(&quot;Starting timelapse capture...&quot;)
-    
-    try:
-        while True:
-            # Take photo
-            success = take_photo()
-            
-            # Wait for the next interval
-            print(f&quot;Waiting {INTERVAL} seconds until next capture...&quot;)
-            time.sleep(INTERVAL)
-    except KeyboardInterrupt:
-        print(&quot;Timelapse capture stopped by user.&quot;)
-    except Exception as e:
-        print(f&quot;Error in main loop: {e}&quot;)
-
-if __name__ == &quot;__main__&quot;:
-    main()</code></pre>
-</div>
-<div id="systemd-service-timelapse.service" class="section level2">
-<h2>Systemd Service (timelapse.service)</h2>
-<p>Create a systemd service to run the script at boot:</p>
-<pre class="ini"><code>[Unit]
-Description=Raspberry Pi NoIR Camera Timelapse
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/python3 /home/pi/timelapse.py
-WorkingDirectory=/home/pi
-StandardOutput=append:/home/pi/timelapse.log
-StandardError=append:/home/pi/timelapse.log
-Restart=always
-User=pi
-
-[Install]
-WantedBy=multi-user.target</code></pre>
-</div>
-<div id="installation-steps" class="section level2">
-<h2>Installation Steps</h2>
-<div id="step-1-create-the-python-script" class="section level3">
-<h3>Step 1: Create the Python script</h3>
-<ol style="list-style-type: decimal">
-<li><p>Plug-in a USB drive with the files you need and open a terminal
-on your Raspberry Pi</p></li>
-<li><p>Create the Python script file called timelapse.py and copy it to
-/home/pi as follows:</p>
-<pre class="bash"><code>sudo cp timelapse.py /home/pi/</code></pre></li>
-<li><p>Copy and paste the Python script from above</p></li>
-<li><p>Save and exit (Ctrl+X, then Y, then Enter)</p></li>
-<li><p>Make the script executable:</p>
-<pre class="bash"><code>sudo chmod +x /home/pi/timelapse.py</code></pre></li>
-</ol>
-</div>
-<div id="step-2-create-the-systemd-service" class="section level3">
-<h3>Step 2: Create the systemd service</h3>
-<ol style="list-style-type: decimal">
-<li><p>Create a systemd service file. Copy the file contents above into
-a file called timelapse.service and copy ito into /etc/systemd/system/
-as follows:</p>
-<pre class="bash"><code>sudo cp timelapse.service /etc/systemd/system/</code></pre></li>
-<li><p>Copy and paste the service configuration from above</p></li>
-<li><p>Save and exit (Ctrl+X, then Y, then Enter)</p></li>
-<li><p>Make sure that you account is configured to access the files
-appropriately:</p></li>
-</ol>
-<pre class="bash"><code>sudo usermod -a -G video,gpio pi
-sudo usermod -a -G i2c,spi pi</code></pre>
-</div>
-<div id="step-3-enable-and-start-the-service" class="section level3">
-<h3>Step 3: Enable and start the service</h3>
-<pre class="bash"><code>sudo systemctl daemon-reload
-sudo systemctl enable timelapse.service
-sudo systemctl start timelapse.service</code></pre>
-</div>
-<div id="step-4-check-the-status" class="section level3">
-<h3>Step 4: Check the status</h3>
-<pre class="bash"><code>sudo systemctl status timelapse.service</code></pre>
-</div>
-</div>
-<div id="additional-information" class="section level2">
-<h2>Additional Information</h2>
-<ul>
-<li>Photos will be saved to <code>/home/pi/timelapse/</code> with
-filenames like <code>timelapse_20250402_153000.jpg</code></li>
-<li>Logs will be saved to <code>/home/pi/timelapse.log</code></li>
-<li>You can modify the <code>INTERVAL</code> variable in the script to
-change the time between photos</li>
-<li>Make sure your Raspberry Pi NoIR camera is properly connected and
-enabled in <code>raspi-config</code></li>
-<li>The script uses <code>libcamera-still</code> which is standard for
-Raspberry Pi OS Bullseye and newer</li>
-</ul>
-</div>
-<div id="managing-the-service" class="section level2">
-<h2>Managing the Service</h2>
-<p>To check the service status:</p>
-<pre class="bash"><code>sudo systemctl status timelapse.service</code></pre>
-<p>To stop the service:</p>
-<pre class="bash"><code>sudo systemctl stop timelapse.service</code></pre>
-<p>To start the service:</p>
-<pre class="bash"><code>sudo systemctl start timelapse.service</code></pre>
-<p>To view the logs:</p>
-<pre class="bash"><code>tail -f /home/pi/timelapse.log</code></pre>
-</div>
-<div id="troubleshooting" class="section level2">
-<h2>Troubleshooting</h2>
-<p>If the camera isn’t working: 1. Check that the camera is properly
-connected 2. Ensure the camera is enabled in raspi-config:
-<code>bash    sudo raspi-config</code> Navigate to “Interface Options”
-&gt; “Camera” and enable it 3. Reboot the Raspberry Pi:
-<code>bash    sudo reboot</code></p>
-<p>If the service doesn’t start: 1. Check the service status:
-<code>bash    sudo systemctl status timelapse.service</code> 2. Check
-the logs: <code>bash    tail -f /home/pi/timelapse.log</code></p>
 </div>
 </div>
 
